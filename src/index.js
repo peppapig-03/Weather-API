@@ -1,8 +1,15 @@
 import "./styles.css"
 import API from "./api.js"
-import httpRequestMaker from "./httpRequestMaker.js"
+import uiHandler from "./ui.js"
 const body=document.querySelector("body")
-console.log(await API.fetchData("Kuala Lumpur"))
-console.log(await API.fetchData("Pulau Pinang"))
-console.log(await API.fetchData("Johor Bahru"))
-console.log(await API.fetchData("Melaka Central"))
+console.time("TimeRecord")
+const run=async function(inputLocation){
+    const parsedData=await API.fetchKeyData(inputLocation)
+    console.log(parsedData)
+    console.log(parsedData.name)
+    console.timeLog("TimeRecord")
+}
+uiHandler.newLocationInput()
+uiHandler.newLocationInput()
+console.log(window)
+console.log()

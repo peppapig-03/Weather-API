@@ -1,3 +1,24 @@
-body{
+body {
     background-color: orange;
+    display: grid;
+    grid-template-rows: 1fr 5fr;
+    height: 100dvh;
+    padding: 0px;
+    margin: 0px;
+}
+
+header {
+    background-color: yellow;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px
+}
+#newLocationForm{
+    display:flex;
+}
+.inputBox {
+    display: grid;
+    grid-template-rows:1fr 1fr;
+    gap:0px;
 }
