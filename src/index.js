@@ -17,11 +17,30 @@ const spawnNewLocationEventListener = function () {
 const addLocationRectangle = function (locationObject) {
     uiHandler.addLocationToMain(locationObject)
 }
+const invalidInputLocationName=function(errorString){
+    uiHandler.displayError(errorString)
+}
 const run = function () {
     spawnNewLocationEventListener()
+    state.subscribe("addLocationObject",addLocationRectangle)
+    state.subscribe("addLocationObjectError",invalidInputLocationName)
 }
-state.subscribe("addLocationObject",addLocationRectangle)
 state.addLocationObject("Penang")
 state.addLocationObject("Melaka")
 state.addLocationObject("Shah Alam")
 run()
+const getPosition=function(){
+    return new Promise((resolve,reject)=>{
+    navigator.geolocation.getCurrentPosition(resolve,reject)
+    })
+}
+const asyncPosition= async function(){
+    try{
+    const position=await getPosition()
+    console.log(position)
+    console.log("success")
+    } catch(error){
+        console.log(error)
+    }
+}
+asyncPosition()

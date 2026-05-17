@@ -2,7 +2,6 @@ function httpRequestMaker(inputPhrase){
     const httpPhrase=inputPhrase.split(" ").join("%20")
     return `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${httpPhrase}/?unitGroup=metric&key=DG3J54RLAVLUM2EPNYU2DDP68&contentType=json`
 }
-
 function synthesiseAddress(inputPhrase){
     if (inputPhrase.toUpperCase()==inputPhrase.toLowerCase()){
        return inputPhrase
@@ -44,9 +43,26 @@ function createFullForm(){
         input
     }
 }
+function createSelectBox(selectArray/*Array of location names(string)*/){
+    const select=document.createElement("select")
+    const optionArray=[]
+    selectArray.forEach((locationName)=>{
+        const option=document.createElement("option")
+        option.value=locationName
+        option.textContent=locationName
+        select.appendChild(option)
+        optionArray.push(option)
+    })
+    const header=document.querySelector("header")
+    header.appendChild(select)
+    return {
+        select,
+        optionArray
+    }
+
+}
 export {httpRequestMaker,
     synthesiseAddress,
-    createInputBox,
-    createSubmitButton,
-    createFullForm
+    createFullForm,
+    createSelectBox
 }

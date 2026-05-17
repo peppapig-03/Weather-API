@@ -3,10 +3,14 @@ const state=(()=>{
     const locationList=[]
     const events={}
     const addLocationObject=async function(inputLocation){
-        const keyDataObject=await API.fetchKeyData(inputLocation)
-        console.log(keyDataObject)
-        locationList.push(keyDataObject)
-        publish("addLocationObject",keyDataObject)
+        try{
+            const keyDataObject=await API.fetchKeyData(inputLocation)
+            console.log(keyDataObject)
+            locationList.push(keyDataObject)
+            publish("addLocationObject",keyDataObject)
+        } catch(error){
+            publish("addLocationObjectError","Invalid Address")
+        }
     }
     const createStateInstance=function(){
         return [...locationList]

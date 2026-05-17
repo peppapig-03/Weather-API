@@ -1,20 +1,10 @@
 import {httpRequestMaker, synthesiseAddress} from "./utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
-        try{       
-            const httpURL=httpRequestMaker(inputLocation)   
-            let rawData=await fetch(httpURL)
-            let data=await rawData.json()
-            return data
-        }catch(error){
-            return {
-                "currentConditions":{
-                    "temp":"failed",
-                    "conditions":"failed"
-                },
-                "resolvedAddress":"failed"
-            }
-        }
+        const httpURL=httpRequestMaker(inputLocation)   
+        let rawData=await fetch(httpURL)
+        let data=await rawData.json()
+        return data
     }
     const dataTemp=function(data){
         return data.currentConditions.temp
