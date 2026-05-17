@@ -1,3 +1,8 @@
+/*New Task: addEventListener to comboBox
+such that when it chooses new item the form pops up
+if not then main displays information*/
+
+
 import "./styles.css"
 import uiHandler from "./ui.js"
 import state from "./state.js"
@@ -20,10 +25,26 @@ const addLocationRectangle = function (locationObject) {
 const invalidInputLocationName=function(errorString){
     uiHandler.displayError(errorString)
 }
+const spawnLocationSelectBox=function(){
+    const header=document.querySelector("header")
+    const select=document.createElement("select")
+    header.appendChild(select)
+}
+const updateLocationSelectBox=function(stateArray){
+    console.log(state.retrieveState())
+    const selectObject=uiHandler.updateSelectLocationBox(stateArray)
+}
+const spawnLocationSelectBoxEventListener = function (){
+    const select=document.querySelector("select")
+
+    
+}
 const run = function () {
+    spawnLocationSelectBox()
     spawnNewLocationEventListener()
     state.subscribe("addLocationObject",addLocationRectangle)
     state.subscribe("addLocationObjectError",invalidInputLocationName)
+    state.subscribe("wholeStateUpdate",updateLocationSelectBox)
 }
 state.addLocationObject("Penang")
 state.addLocationObject("Melaka")
@@ -43,4 +64,3 @@ const asyncPosition= async function(){
         console.log(error)
     }
 }
-asyncPosition()

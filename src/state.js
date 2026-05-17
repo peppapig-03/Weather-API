@@ -12,6 +12,9 @@ const state=(()=>{
             publish("addLocationObjectError","Invalid Address")
         }
     }
+    const wholeStatePublisher=function(){
+        publish("wholeStateUpdate",createStateInstance())
+    }
     const createStateInstance=function(){
         return [...locationList]
     }
@@ -44,12 +47,16 @@ const state=(()=>{
             console.log(key,value)
         })
     }
+    const retrieveState=function(){
+        return createStateInstance()
+    }
+    subscribe("addLocationObject", wholeStatePublisher)
     return {addLocationObject,
-        printState,
         subscribe,
         unsubscribe,
-        printEvents,
-        publish
+        publish,
+        wholeStatePublisher,
+        retrieveState
         }
 })()
 export default state

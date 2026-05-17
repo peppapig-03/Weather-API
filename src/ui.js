@@ -1,9 +1,12 @@
-import { createInputBox , createSubmitButton , createFullForm , } from "./utils.js"
+import { createFullForm , updateSelectBox } from "./utils.js"
 const body=document.body
 const uiHandler=(function(){
     const header=document.querySelector("header")
-    const selectLocationBox=function(locationObjectArray/*Array of location Objects*/){
-        
+    const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
+        const selectLocationBoxObject=updateSelectBox(locationObjectArray.map((locationObject)=>{
+            return locationObject.originalName
+        }))
+        return selectLocationBoxObject
     }
     const newLocationInput=function(){
         const formObject=createFullForm()
@@ -42,7 +45,8 @@ const uiHandler=(function(){
     }
     return {newLocationInput,
         addLocationToMain,
-        displayError
+        displayError,
+        updateSelectLocationBox
     }
 }())
 export default uiHandler

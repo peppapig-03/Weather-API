@@ -43,8 +43,14 @@ function createFullForm(){
         input
     }
 }
-function createSelectBox(selectArray/*Array of location names(string)*/){
-    const select=document.createElement("select")
+function clearSelectBox(selectBox){
+    while(selectBox.firstElementChild){
+        selectBox.removeChild(selectBox.lastElementChild)
+    }
+}
+function updateSelectBox(selectArray/*Array of location names(string)*/){
+    const select=document.querySelector("select")
+    clearSelectBox(select)
     const optionArray=[]
     selectArray.forEach((locationName)=>{
         const option=document.createElement("option")
@@ -53,8 +59,6 @@ function createSelectBox(selectArray/*Array of location names(string)*/){
         select.appendChild(option)
         optionArray.push(option)
     })
-    const header=document.querySelector("header")
-    header.appendChild(select)
     return {
         select,
         optionArray
@@ -64,5 +68,5 @@ function createSelectBox(selectArray/*Array of location names(string)*/){
 export {httpRequestMaker,
     synthesiseAddress,
     createFullForm,
-    createSelectBox
+    updateSelectBox
 }
