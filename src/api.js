@@ -1,10 +1,20 @@
-import {httpRequestMaker, getAddressBeforeComma} from "./utils.js"
+import {httpRequestMaker, synthesiseAddress} from "./utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
-        const httpURL=httpRequestMaker(inputLocation)
-        let rawData=await fetch(httpURL)
-        let data=await rawData.json()
-        return data
+        try{        
+            const httpURL=httpRequestMaker(inputLocation)
+            let rawData=await fetch(httpURL)
+            let data=await rawData.json()
+            return data
+        }catch{
+            return {
+                "currentConditions":{
+                    "temp":"failed",
+                    "conditions":"failed"
+                },
+                "resolvedAddress":"failed"
+            }
+        }
     }
     const dataTemp=function(data){
         return data.currentConditions.temp
@@ -13,14 +23,15 @@ const API=(function(){
         return data.currentConditions.conditions
     }
     const dataResolvedLocationName=function(data){
-        return getAddressBeforeComma(data.resolvedAddress)
+        return synthesiseAddress(data.resolvedAddress)
     }
     const fetchKeyData=async (inputLocation)=>{
         let data=await fetchData(inputLocation)
         return {
             "name":dataResolvedLocationName(data),
             "temperature":dataTemp(data),
-            "weather":dataWeatherConditions(data)
+            "weather":dataWeatherConditions(data),
+            "originalName":inputLocation
         }
     }
     return {fetchKeyData}

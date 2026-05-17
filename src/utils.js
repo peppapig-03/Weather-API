@@ -2,13 +2,18 @@ function httpRequestMaker(inputPhrase){
     const httpPhrase=inputPhrase.split(" ").join("%20")
     return `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${httpPhrase}/?unitGroup=metric&key=DG3J54RLAVLUM2EPNYU2DDP68&contentType=json`
 }
-function getAddressBeforeComma(inputPhrase){
-    const comma=inputPhrase.search(",")
-    if (comma==-1){
-        return inputPhrase
-    } else{
-        return inputPhrase.slice(0,comma)
-    }
+
+function synthesiseAddress(inputPhrase){
+    if (inputPhrase.toUpperCase()==inputPhrase.toLowerCase()){
+       return inputPhrase
+    } else {
+       const comma=inputPhrase.search(",")
+        if (comma==-1){
+            return inputPhrase
+        } else{
+            return inputPhrase.slice(0,comma)
+        }
+    }    
 }
 function createInputBox(){
     const box=document.createElement("div")
@@ -20,8 +25,28 @@ function createSubmitButton(){
     button.classList.add("submitButton")
     return button
 }
+function createFullForm(){
+    const form=document.createElement("form")
+    const inputBox=createInputBox()
+    const input=document.createElement("input")
+    const label=document.createElement("label")
+    const submitButton=createSubmitButton()
+    const header=document.querySelector("header")
+    header.appendChild(form)
+    form.appendChild(inputBox)
+    inputBox.appendChild(label)
+    inputBox.appendChild(input)
+    form.appendChild(submitButton)
+    return {
+        form,
+        inputBox,
+        label,
+        input
+    }
+}
 export {httpRequestMaker,
-    getAddressBeforeComma,
+    synthesiseAddress,
     createInputBox,
-    createSubmitButton
+    createSubmitButton,
+    createFullForm
 }
