@@ -1,12 +1,12 @@
 import {httpRequestMaker, synthesiseAddress} from "./utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
-        try{        
-            const httpURL=httpRequestMaker(inputLocation)
+        try{       
+            const httpURL=httpRequestMaker(inputLocation)   
             let rawData=await fetch(httpURL)
             let data=await rawData.json()
             return data
-        }catch{
+        }catch(error){
             return {
                 "currentConditions":{
                     "temp":"failed",

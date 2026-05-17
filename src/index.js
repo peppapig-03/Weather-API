@@ -1,13 +1,12 @@
 import "./styles.css"
-import API from "./api.js"
 import uiHandler from "./ui.js"
 import state from "./state.js"
 const body = document.querySelector("body")
 const formEventListenerHandler=function(form, event){
     event.preventDefault()
     const newLocation=new FormData(form)
-    state.addLocationObject(newLocation.get("newLocation"))
     form.reset()
+    state.addLocationObject(newLocation.get("newLocation"))
 }
 const spawnNewLocationEventListener = function () {
     const formObject=uiHandler.newLocationInput()
@@ -15,14 +14,14 @@ const spawnNewLocationEventListener = function () {
         formEventListenerHandler(formObject.form, event)
     })
 }
-const updateUI = function () {
-    uiHandler.addTextRectangle()
+const addLocationRectangle = function (locationObject) {
+    uiHandler.addLocationToMain(locationObject)
 }
 const run = function () {
     spawnNewLocationEventListener()
 }
-console.log(window)
-console.log()
-state.addLocationObject("Melaka Central")
+state.subscribe("addLocationObject",addLocationRectangle)
 state.addLocationObject("Penang")
+state.addLocationObject("Melaka")
+state.addLocationObject("Shah Alam")
 run()

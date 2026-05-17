@@ -19,15 +19,26 @@ const uiHandler=(function(){
         input.name="newLocation"
         return formObject
     }
-    const addTextRectangle=function(){
+    const addLocationToMain=function(locationObject){
+        clearMain()
         const main=document.querySelector("main")
+        Object.entries(locationObject).forEach(([key,value])=>{
+            const rect=document.createElement("div")
+            rect.textContent+=`${key[0].toUpperCase()}${key.slice(1,key.length+1)} : ${value} `
+            main.appendChild(rect)
+        })
         const rect=document.createElement("div")
-        rect.textContent="TESTTEST"
+        rect.textContent="|||||||||||"
         main.appendChild(rect)
     }
-
+    const clearMain=function(){
+        const main=document.querySelector("main")
+        while (main.firstElementChild){
+            main.removeChild(main.lastElementChild)
+        }
+    }
     return {newLocationInput,
-        addTextRectangle
+        addLocationToMain
     }
 }())
 export default uiHandler
