@@ -1,15 +1,25 @@
 import API from "./api.js"
+import storage from "./storage.js"
 const state=(()=>{
-    const locationList=[]
+    const locationList=storage.get().locations
     const events={}
+    const initialisation=function(){
+        publish("stateInitialisation", "initialisation" )
+    }
     const addLocationObject=async function(inputLocation){
-        try{
-            const keyDataObject=await API.fetchKeyData(inputLocation)
-            console.log(keyDataObject)
-            locationList.push(keyDataObject)
-            publish("addLocationObject",keyDataObject)
-        } catch(error){
-            publish("addLocationObjectError","Invalid Address")
+        if (detectDuplicateLocation(inputLocation)==true){
+            publish ("addLocationObjectError", "Address already exists")
+            return
+        } else{
+            try{
+                const keyDataObject=await API.fetchKeyData(inputLocation)
+                console.log(keyDataObject)
+                locationList.push(keyDataObject)
+                storage.post(locationList)
+                publish("addLocationObject",keyDataObject)
+            } catch(error){
+                publish("addLocationObjectError","Invalid Address")
+            }
         }
     }
     const wholeStatePublisher=function(){
@@ -17,6 +27,23 @@ const state=(()=>{
     }
     const createStateInstance=function(){
         return [...locationList]
+    }
+    const getSpecificLocationObject=function(locationNameString){
+        const specificLocationObjectArray=locationList.filter((location)=>{
+            return location.originalName===locationNameString
+        })
+        if (specificLocationObjectArray.length==1){
+            return specificLocationObjectArray[0]
+        } else{
+            return "Error"
+        }
+    }
+    const detectDuplicateLocation=function(locationNameString){
+        if(locationList.find(location=>location.originalName==locationNameString)!=undefined){
+            return true
+        } else{
+            return false
+        }
     }
     const printState=function(){
         console.log(createStateInstance())
@@ -51,12 +78,15 @@ const state=(()=>{
         return createStateInstance()
     }
     subscribe("addLocationObject", wholeStatePublisher)
+    subscribe("stateInitialisation", wholeStatePublisher)
     return {addLocationObject,
         subscribe,
         unsubscribe,
         publish,
         wholeStatePublisher,
-        retrieveState
+        retrieveState,
+        getSpecificLocationObject,
+        initialisation
         }
 })()
 export default state

@@ -1,4 +1,4 @@
-import { createFullForm , updateSelectBox } from "./utils.js"
+import { createFullForm , updateSelectBox , clearMain } from "./utils.js"
 const body=document.body
 const uiHandler=(function(){
     const header=document.querySelector("header")
@@ -9,6 +9,7 @@ const uiHandler=(function(){
         return selectLocationBoxObject
     }
     const newLocationInput=function(){
+        clearMain()
         const formObject=createFullForm()
         const form=formObject.form
         form.id="newLocationForm"
@@ -33,12 +34,6 @@ const uiHandler=(function(){
         const rect=document.createElement("div")
         rect.textContent="|||||||||||"
         main.appendChild(rect)
-    }
-    const clearMain=function(){
-        const main=document.querySelector("main")
-        while (main.firstElementChild){
-            main.removeChild(main.lastElementChild)
-        }
     }
     const displayError=function(errorString){
         alert(errorString)

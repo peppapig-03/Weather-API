@@ -1,11 +1,7 @@
-/*New Task: addEventListener to comboBox
-such that when it chooses new item the form pops up
-if not then main displays information*/
-
-
 import "./styles.css"
 import uiHandler from "./ui.js"
 import state from "./state.js"
+import {despawnForm, addNewLocationToSelectBox} from "./utils.js"
 const body = document.querySelector("body")
 const formEventListenerHandler=function(form, event){
     event.preventDefault()
@@ -29,26 +25,41 @@ const spawnLocationSelectBox=function(){
     const header=document.querySelector("header")
     const select=document.createElement("select")
     header.appendChild(select)
+    addNewLocationToSelectBox(select)
 }
 const updateLocationSelectBox=function(stateArray){
     console.log(state.retrieveState())
     const selectObject=uiHandler.updateSelectLocationBox(stateArray)
 }
+const locationSelectBoxEventHandler=function(event){
+    despawnForm()
+    const locationObject=state.getSpecificLocationObject(event.target.value)
+    addLocationRectangle(locationObject)
+}
+const locationSelectBoxNewLocationEventHandler=function(){
+    spawnNewLocationEventListener()
+}
 const spawnLocationSelectBoxEventListener = function (){
     const select=document.querySelector("select")
-
-    
+    select.addEventListener("change",(event)=>{
+        if (event.target.value=="New Location"){
+            locationSelectBoxNewLocationEventHandler()
+        } else {
+        locationSelectBoxEventHandler(event)
+        }
+    })    
+}
+const test=function(input){
+    console.log(input)
 }
 const run = function () {
     spawnLocationSelectBox()
-    spawnNewLocationEventListener()
-    state.subscribe("addLocationObject",addLocationRectangle)
+    spawnLocationSelectBoxEventListener()
+    locationSelectBoxNewLocationEventHandler()
     state.subscribe("addLocationObjectError",invalidInputLocationName)
     state.subscribe("wholeStateUpdate",updateLocationSelectBox)
+    state.initialisation()
 }
-state.addLocationObject("Penang")
-state.addLocationObject("Melaka")
-state.addLocationObject("Shah Alam")
 run()
 const getPosition=function(){
     return new Promise((resolve,reject)=>{

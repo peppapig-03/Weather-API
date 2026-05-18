@@ -43,15 +43,28 @@ function createFullForm(){
         input
     }
 }
+function clearMain(){
+    const main=document.querySelector("main")
+    while(main.firstElementChild){
+        main.removeChild(main.lastElementChild)
+    }
+}
 function clearSelectBox(selectBox){
     while(selectBox.firstElementChild){
         selectBox.removeChild(selectBox.lastElementChild)
     }
 }
+function addNewLocationToSelectBox(selectBox){
+    const option=document.createElement("option")
+    option.value="New Location"
+    option.textContent="New Location"
+    selectBox.appendChild(option)
+}
 function updateSelectBox(selectArray/*Array of location names(string)*/){
     const select=document.querySelector("select")
     clearSelectBox(select)
     const optionArray=[]
+    addNewLocationToSelectBox(select)
     selectArray.forEach((locationName)=>{
         const option=document.createElement("option")
         option.value=locationName
@@ -59,14 +72,27 @@ function updateSelectBox(selectArray/*Array of location names(string)*/){
         select.appendChild(option)
         optionArray.push(option)
     })
+    
     return {
         select,
-        optionArray
+        optionArray,
     }
 
+}
+function despawnForm(){
+    try{
+        const form=document.querySelector("form")
+        const header=document.querySelector("header")
+        header.removeChild(form)
+    } catch {
+        return
+    }
 }
 export {httpRequestMaker,
     synthesiseAddress,
     createFullForm,
-    updateSelectBox
+    updateSelectBox,
+    clearMain,
+    despawnForm,
+    addNewLocationToSelectBox
 }
