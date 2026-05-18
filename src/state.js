@@ -54,6 +54,16 @@ const state=(()=>{
     const currentLocationCount=function(){
         return locationList.length
     }
+    const deleteLocation=function(locationObject){
+        const index=locationList.findIndex((location)=>location===locationObject)
+        if (index==-1){
+            return
+        } else {
+            locationList.splice(index,1)
+            storage.post(locationList)
+            publish("deleteLocation", "")
+        }
+    }
     const subscribe=function(event,callback){
         if(!events[event]){
             events[event]=[]
@@ -85,6 +95,7 @@ const state=(()=>{
     subscribe("addLocationObject", wholeStatePublisher)
     subscribe("stateInitialisation", wholeStatePublisher)
     subscribe("clearLocationList", wholeStatePublisher)
+    subscribe("deleteLocation", wholeStatePublisher)
     return {addLocationObject,
         subscribe,
         unsubscribe,
@@ -93,7 +104,8 @@ const state=(()=>{
         retrieveState,
         getSpecificLocationObject,
         initialisation,
-        clearLocationList
+        clearLocationList,
+        deleteLocation
         }
 })()
 export default state

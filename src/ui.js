@@ -1,4 +1,4 @@
-import { createFullForm , updateSelectBox , clearMain } from "./utils.js"
+import { createFullForm , updateSelectBox , clearMain , deKebab , createDeleteLocationButton} from "./utils.js"
 const body=document.body
 const uiHandler=(function(){
     const header=document.querySelector("header")
@@ -22,18 +22,22 @@ const uiHandler=(function(){
         input.id="newLocation"
         input.placeholder="New Location..."
         input.name="newLocation"
+        const submitButton=formObject.submitButton
+        submitButton.textContent="Submit"
         return formObject
     }
     const addLocationToMain=function(locationObject){
         clearMain()
         Object.entries(locationObject).forEach(([key,value])=>{
-            const rect=document.createElement("div")
-            rect.textContent+=`${key[0].toUpperCase()}${key.slice(1,key.length+1)} : ${value} `
-            main.appendChild(rect)
+            const div=document.createElement("div")
+            div.textContent=`${deKebab(key)} : ${value}`
+            div.classList.add("locationInformation")
+            main.appendChild(div)
         })
-        const rect=document.createElement("div")
-        rect.textContent="|||||||||||"
-        main.appendChild(rect)
+        const button=createDeleteLocationButton()
+        main.appendChild(button)
+        button.textContent="Delete Location"
+        return button
     }
     const displayError=function(errorString){
         alert(errorString)

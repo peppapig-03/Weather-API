@@ -18,7 +18,7 @@ const API=(function(){
     const fetchKeyData=async (inputLocation)=>{
         let data=await fetchData(inputLocation)
         return {
-            "name":dataResolvedLocationName(data),
+            "locationName":dataResolvedLocationName(data),
             "temperature":dataTemp(data),
             "weather":dataWeatherConditions(data),
             "originalName":inputLocation

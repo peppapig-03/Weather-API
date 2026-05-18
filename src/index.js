@@ -1,10 +1,19 @@
 import "./styles.css"
 import uiHandler from "./ui.js"
 import state from "./state.js"
-import {despawnForm, clearHeader , updateSelectBox} from "./utils.js"
+import {despawnForm, clearHeader , updateSelectBox } from "./utils.js"
 const body = document.querySelector("body")
 const addLocationRectangle = function (locationObject) {
-    uiHandler.addLocationToMain(locationObject)
+    const button=uiHandler.addLocationToMain(locationObject)
+    button.addEventListener("click",(event)=>{
+        state.deleteLocation(locationObject)
+        selectNewLocationOption()
+    })
+}
+const selectNewLocationOption=function(){
+    const select=document.querySelector("select")
+    select.value="New Location"
+    select.dispatchEvent(new Event("change"))
 }
 const invalidInputLocationName=function(errorString){
     uiHandler.displayError(errorString)
