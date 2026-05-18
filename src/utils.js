@@ -81,7 +81,7 @@ function updateSelectBox(selectArray/*Array of location names(string)*/){
     
     return {
         select,
-        optionArray,
+        optionArray
     }
 
 }

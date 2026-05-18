@@ -32,7 +32,7 @@ const spawnLocationSelectBox=function(){
             if (event.target.value=="New Location"){
                 spawnNewLocationForm()
             } else {
-            locationSelectBoxEventHandler(event)
+                locationSelectBoxEventHandler(event)
             }
         })    
     }
@@ -41,6 +41,11 @@ const spawnLocationSelectBox=function(){
 const updateLocationSelectBox=function(stateArray){
     console.log(state.retrieveState())
     const selectObject=uiHandler.updateSelectLocationBox(stateArray)
+}
+const selectLastOption=function(){
+    const select=document.querySelector("select")
+    select.value=state.retrieveState().at(-1).originalName
+    select.dispatchEvent(new Event("change"))
 }
 const locationSelectBoxEventHandler=function(event){
     despawnForm()
@@ -65,6 +70,7 @@ const run = function () {
     spawnLocationSelectBox()
     state.subscribe("addLocationObjectError",invalidInputLocationName)
     state.subscribe("wholeStateUpdate",updateLocationSelectBox)
+    state.subscribe("addLocationObject",selectLastOption)
     state.initialisation()
 }
 run()
