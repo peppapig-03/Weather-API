@@ -22,3 +22,7 @@ header {
     grid-template-rows:1fr 1fr;
     gap:0px;
 }
+.clearLocationList{
+    height:20%;
+    aspect-ratio:3
+}

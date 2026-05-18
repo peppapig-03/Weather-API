@@ -2,6 +2,7 @@ import { createFullForm , updateSelectBox , clearMain } from "./utils.js"
 const body=document.body
 const uiHandler=(function(){
     const header=document.querySelector("header")
+    const main=document.querySelector("main")
     const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
         const selectLocationBoxObject=updateSelectBox(locationObjectArray.map((locationObject)=>{
             return locationObject.originalName
@@ -25,7 +26,6 @@ const uiHandler=(function(){
     }
     const addLocationToMain=function(locationObject){
         clearMain()
-        const main=document.querySelector("main")
         Object.entries(locationObject).forEach(([key,value])=>{
             const rect=document.createElement("div")
             rect.textContent+=`${key[0].toUpperCase()}${key.slice(1,key.length+1)} : ${value} `
@@ -38,10 +38,17 @@ const uiHandler=(function(){
     const displayError=function(errorString){
         alert(errorString)
     }
+    const addClearLocationListButton=function(){
+        const button=document.createElement("button")
+        button.classList.add("clearLocationList")
+        header.appendChild(button)
+        return button
+    }
     return {newLocationInput,
         addLocationToMain,
         displayError,
-        updateSelectLocationBox
+        updateSelectLocationBox,
+        addClearLocationListButton
     }
 }())
 export default uiHandler

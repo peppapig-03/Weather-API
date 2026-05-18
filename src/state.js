@@ -77,8 +77,14 @@ const state=(()=>{
     const retrieveState=function(){
         return createStateInstance()
     }
+    const clearLocationList=function(){
+        locationList.splice(0)
+        storage.post(locationList)
+        publish("clearLocationList", [])
+    }
     subscribe("addLocationObject", wholeStatePublisher)
     subscribe("stateInitialisation", wholeStatePublisher)
+    subscribe("clearLocationList", wholeStatePublisher)
     return {addLocationObject,
         subscribe,
         unsubscribe,
@@ -86,7 +92,8 @@ const state=(()=>{
         wholeStatePublisher,
         retrieveState,
         getSpecificLocationObject,
-        initialisation
+        initialisation,
+        clearLocationList
         }
 })()
 export default state

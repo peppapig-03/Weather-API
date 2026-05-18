@@ -49,6 +49,12 @@ function clearMain(){
         main.removeChild(main.lastElementChild)
     }
 }
+function clearHeader(){
+    const header=document.querySelector("header")
+    while(header.firstElementChild){
+        header.removeChild(header.lastElementChild)
+    }
+}
 function clearSelectBox(selectBox){
     while(selectBox.firstElementChild){
         selectBox.removeChild(selectBox.lastElementChild)
@@ -94,5 +100,5 @@ export {httpRequestMaker,
     updateSelectBox,
     clearMain,
     despawnForm,
-    addNewLocationToSelectBox
+    clearHeader
 }
