@@ -1,14 +1,14 @@
 import API from "./api.js"
 import storage from "./storage.js"
+import eventBus from "./eventBus.js"
 const state=(()=>{
     const locationList=storage.get().locations
-    const events={}
     const initialisation=function(){
-        publish("stateInitialisation", "initialisation" )
+        selectBoxChange()
     }
     const addLocationObject=async function(inputLocation){
         if (detectDuplicateLocation(inputLocation)==true){
-            publish ("addLocationObjectError", "Address already exists")
+            eventBus.publish ("addLocationObjectError", "Address already exists")
             return
         } else{
             try{
@@ -16,19 +16,17 @@ const state=(()=>{
                 console.log(keyDataObject)
                 locationList.push(keyDataObject)
                 storage.post(locationList)
-                publish("addLocationObject",keyDataObject)
+                selectBoxChange()
+                eventBus.publish("addLocationObject",keyDataObject)
             } catch(error){
-                publish("addLocationObjectError","Invalid Address")
+                eventBus.publish("addLocationObjectError","Invalid Address")
             }
         }
     }
-    const wholeStatePublisher=function(){
-        publish("wholeStateUpdate",createStateInstance())
-    }
     const createStateInstance=function(){
-        return [...locationList]
+        return structuredClone(locationList)
     }
-    const getSpecificLocationObject=function(locationNameString){
+    const getLocationObject=function(locationNameString){
         const specificLocationObjectArray=locationList.filter((location)=>{
             return location.originalName===locationNameString
         })
@@ -45,44 +43,16 @@ const state=(()=>{
             return false
         }
     }
-    const printState=function(){
-        console.log(createStateInstance())
-        locationList.forEach((object)=>{
-        console.log(object)
-        })
-    }
-    const currentLocationCount=function(){
-        return locationList.length
-    }
-    const deleteLocation=function(locationObject){
+    const deleteLocationObject=function(locationObject){
         const index=locationList.findIndex((location)=>location===locationObject)
         if (index==-1){
             return
         } else {
             locationList.splice(index,1)
             storage.post(locationList)
-            publish("deleteLocation", "")
+            eventBus.publish("deleteLocationObject", "")
+            selectBoxChange()
         }
-    }
-    const subscribe=function(event,callback){
-        if(!events[event]){
-            events[event]=[]
-        }
-        events[event].push(callback)
-    }    
-    const unsubscribe=function(event,callback){
-        if(!events[event]) return
-        events[event]=events[event].filter((fn)=>fn!==callback)
-    }
-    const publish=function(event,data){
-        if(!events[event]) return
-        events[event].forEach((fn)=>{fn(data)})
-    }
-    const printEvents=function(){
-        console.log(events)
-        Object.entries(events).forEach(([key,value])=>{
-            console.log(key,value)
-        })
     }
     const retrieveState=function(){
         return createStateInstance()
@@ -90,22 +60,19 @@ const state=(()=>{
     const clearLocationList=function(){
         locationList.splice(0)
         storage.post(locationList)
-        publish("clearLocationList", [])
+        eventBus.publish("clearLocationList", [])
+        selectBoxChange()
     }
-    subscribe("addLocationObject", wholeStatePublisher)
-    subscribe("stateInitialisation", wholeStatePublisher)
-    subscribe("clearLocationList", wholeStatePublisher)
-    subscribe("deleteLocation", wholeStatePublisher)
-    return {addLocationObject,
-        subscribe,
-        unsubscribe,
-        publish,
-        wholeStatePublisher,
-        retrieveState,
-        getSpecificLocationObject,
+    const selectBoxChange=function(){
+        eventBus.publish("selectBoxChange", retrieveState())
+    }
+    return{
         initialisation,
-        clearLocationList,
-        deleteLocation
+        addLocationObject,
+        getLocationObject,
+        deleteLocationObject,
+        retrieveState,
+        clearLocationList
         }
 })()
 export default state

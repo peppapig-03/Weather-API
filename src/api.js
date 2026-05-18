@@ -1,7 +1,7 @@
-import {httpRequestMaker, synthesiseAddress} from "./utils.js"
+import utils from "./utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
-        const httpURL=httpRequestMaker(inputLocation)   
+        const httpURL=utils.httpRequestMaker(inputLocation)   
         let rawData=await fetch(httpURL)
         let data=await rawData.json()
         return data
@@ -13,7 +13,7 @@ const API=(function(){
         return data.currentConditions.conditions
     }
     const dataResolvedLocationName=function(data){
-        return synthesiseAddress(data.resolvedAddress)
+        return utils.synthesiseAddress(data.resolvedAddress)
     }
     const fetchKeyData=async (inputLocation)=>{
         let data=await fetchData(inputLocation)

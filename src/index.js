@@ -1,85 +1,41 @@
 import "./styles.css"
 import uiHandler from "./ui.js"
 import state from "./state.js"
-import {despawnForm, clearHeader , updateSelectBox } from "./utils.js"
-const body = document.querySelector("body")
-const addLocationRectangle = function (locationObject) {
-    const button=uiHandler.addLocationToMain(locationObject)
-    button.addEventListener("click",(event)=>{
-        state.deleteLocation(locationObject)
-        selectNewLocationOption()
-    })
-}
-const selectNewLocationOption=function(){
-    const select=document.querySelector("select")
-    select.value="New Location"
-    select.dispatchEvent(new Event("change"))
-}
+import eventBus from "./eventBus.js"
+import mediator from "./mediator.js"
 const invalidInputLocationName=function(errorString){
     uiHandler.displayError(errorString)
 }
 const spawnNewLocationForm = function () {
-    const formObject=uiHandler.newLocationInput()
-    const formEventListenerHandler=function(form, event){
-        event.preventDefault()
-        const newLocation=new FormData(form)
-        form.reset()
-        state.addLocationObject(newLocation.get("newLocation"))
-    }
-    formObject.form.addEventListener("submit",(event)=>{
-        formEventListenerHandler(formObject.form, event)
+    const form=uiHandler.spawnNLForm()
+    form.addEventListener("submit",(event)=>{
+        mediator.NLSubmission(event, form)
     })
 }
 const spawnLocationSelectBox=function(){
-    const header=document.querySelector("header")
-    const select=document.createElement("select")
-    header.appendChild(select)
-    updateSelectBox([])
-    spawnNewLocationForm()
-    const spawnLocationSelectBoxEventListener = function (){
-        select.addEventListener("change",(event)=>{
-            if (event.target.value=="New Location"){
-                spawnNewLocationForm()
-            } else {
-                locationSelectBoxEventHandler(event)
-            }
-        })    
-    }
-    spawnLocationSelectBoxEventListener()
+    const select=uiHandler.spawnSelectBox()
+    select.addEventListener("change",(event)=>{
+        mediator.selectObject(event.target.value)
+    })    
 }
 const updateLocationSelectBox=function(stateArray){
-    console.log(state.retrieveState())
-    const selectObject=uiHandler.updateSelectLocationBox(stateArray)
+    uiHandler.updateSelectLocationBox(stateArray)
 }
-const selectLastOption=function(){
-    const select=document.querySelector("select")
-    select.value=state.retrieveState().at(-1).originalName
-    select.dispatchEvent(new Event("change"))
-}
-const locationSelectBoxEventHandler=function(event){
-    despawnForm()
-    const locationObject=state.getSpecificLocationObject(event.target.value)
-    addLocationRectangle(locationObject)
-}
-const spawnClearLocationListButton=function(){
-    const button=uiHandler.addClearLocationListButton()
-    button.textContent="Reset"
-    const clearLocationListButtonEventHandler=function(){
-        state.clearLocationList()
-        clearHeader()
-        spawnClearLocationListButton()
-        spawnLocationSelectBox()
-    }
+const spawnResetButton=function(){
+    const button=uiHandler.spawnResetButton()
     button.addEventListener("click", (event)=>{
-        clearLocationListButtonEventHandler()
+        mediator.reset()
+        spawnResetButton()
+        spawnLocationSelectBox()
     })
 }
 const run = function () {
-    spawnClearLocationListButton()
+    eventBus.subscribe("addLocationObject", uiHandler.selectLastOption)
+    eventBus.subscribe("addLocationObjectError",invalidInputLocationName)
+    eventBus.subscribe("selectFirstOption", spawnNewLocationForm)
+    eventBus.subscribe("selectBoxChange", updateLocationSelectBox)
+    spawnResetButton()
     spawnLocationSelectBox()
-    state.subscribe("addLocationObjectError",invalidInputLocationName)
-    state.subscribe("wholeStateUpdate",updateLocationSelectBox)
-    state.subscribe("addLocationObject",selectLastOption)
     state.initialisation()
 }
 run()
