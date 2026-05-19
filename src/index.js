@@ -2,55 +2,43 @@ import "./styles.css"
 import uiHandler from "./ui.js"
 import state from "./state.js"
 import eventBus from "./eventBus.js"
-import mediator from "./mediator.js"
 const invalidInputLocationName=function(errorString){
     uiHandler.displayError(errorString)
 }
-const spawnNewLocationForm = function () {
-    const form=uiHandler.spawnNLForm()
-    form.addEventListener("submit",(event)=>{
-        mediator.NLSubmission(event, form)
-    })
-}
+
 const spawnLocationSelectBox=function(){
     const select=uiHandler.spawnSelectBox()
     select.addEventListener("change",(event)=>{
-        mediator.selectObject(event.target.value)
+        if (event.target.value=="New Location"){
+            eventBus.publish("UI_SELECT_FIRST_OPTION")
+        } else{
+            eventBus.publish("UI_SELECT_LOCATION", state.getLocationObject(event.target.value))
+        } 
     })    
-}
-const updateLocationSelectBox=function(stateArray){
-    uiHandler.updateSelectLocationBox(stateArray)
 }
 const spawnResetButton=function(){
     const button=uiHandler.spawnResetButton()
-    button.addEventListener("click", (event)=>{
-        mediator.reset()
-        spawnResetButton()
-        spawnLocationSelectBox()
+    button.addEventListener("click", ()=>{
+        eventBus.publish("UI_RESET")
     })
 }
-const run = function () {
-    eventBus.subscribe("addLocationObject", uiHandler.selectLastOption)
-    eventBus.subscribe("addLocationObjectError",invalidInputLocationName)
-    eventBus.subscribe("selectFirstOption", spawnNewLocationForm)
-    eventBus.subscribe("selectBoxChange", updateLocationSelectBox)
+const renderInitialisation=function(){
     spawnResetButton()
     spawnLocationSelectBox()
+}
+const run = function () {
+    eventBus.subscribe("UI_RESET", state.clearLocationList)
+    eventBus.subscribe("UI_RESET", uiHandler.selectFirstOption)
+    eventBus.subscribe("STATE_ADD_LOCATION", uiHandler.selectOption)
+    eventBus.subscribe("STATE_ADD_LOCATION_ERROR",invalidInputLocationName)
+    eventBus.subscribe("UI_SELECT_FIRST_OPTION", uiHandler.spawnNLForm)
+    eventBus.subscribe("STATE_UPDATE", uiHandler.updateSelectLocationBox)
+    eventBus.subscribe("UI_DELETE_LOCATION", state.deleteLocationObject)
+    eventBus.subscribe("STATE_DELETE_LOCATION", uiHandler.selectFirstOption)
+    eventBus.subscribe("UI_SELECT_LOCATION", uiHandler.spawnLocationInMain)
+    eventBus.subscribe("UI_SUBMIT_NEW_LOCATION", state.addLocationObject)
+    renderInitialisation()
     state.initialisation()
+
 }
 run()
-/*
-const getPosition=function(){
-    return new Promise((resolve,reject)=>{
-    navigator.geolocation.getCurrentPosition(resolve,reject)
-    })
-}
-const asyncPosition= async function(){
-    try{
-    const position=await getPosition()
-    console.log(position)
-    console.log("success")
-    } catch(error){
-        console.log(error)
-    }
-}*/

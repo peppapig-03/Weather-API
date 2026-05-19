@@ -2,14 +2,15 @@
 import utils from "./utils.js"
 import eventBus from "./eventBus.js"
 import uiCreation from "./uiCreation.js"
-import mediator from "./mediator.js"
 const uiHandler=(function(){
     const header=document.querySelector("header")
     const main=document.querySelector("main")
+    let formPresent=false
     const removeForm=function(){
         try{
             const form=document.querySelector("form")
-            header.removeChild(form)            
+            header.removeChild(form)
+            formPresent=false            
         } catch{
             return
         }
@@ -17,11 +18,6 @@ const uiHandler=(function(){
     const clearMain=function(){
         while (main.firstElementChild){
             main.removeChild(main.lastElementChild)
-        }
-    }
-    const clearHeader=function(){
-        while (header.firstElementChild){
-            header.removeChild(header.lastElementChild)
         }
     }
     const spawnSelectBox=function(){
@@ -44,6 +40,7 @@ const uiHandler=(function(){
     }
     const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
         const select=document.querySelector("select")
+        console.log(select.lastElementChild)
         clearSelectBox(select)
         addNewLocationToSelectBox(select)
         locationObjectArray.forEach((locationObject)=>{
@@ -55,22 +52,30 @@ const uiHandler=(function(){
         })
     }
     const spawnNLForm=function(){
-        clearMain()
-        const {form,
-            label,
-            input,
-            submitButton
-        }=uiCreation.createFullForm()
-        header.appendChild(form)
-        form.id="newLocationForm"
-        label.textContent="New Location:"
-        label.setAttribute("for","newLocation")
-        input.setAttribute("type","text")
-        input.id="newLocation"
-        input.placeholder="New Location..."
-        input.name="newLocation"
-        submitButton.textContent="Submit"
-        return form
+        if (formPresent==false){
+            clearMain()
+            const {form,
+                label,
+                input,
+                submitButton
+            }=uiCreation.createFullForm()
+            header.appendChild(form)
+            form.id="newLocationForm"
+            label.textContent="New Location:"
+            label.setAttribute("for","newLocation")
+            input.setAttribute("type","text")
+            input.id="newLocation"
+            input.placeholder="New Location..."
+            input.name="newLocation"
+            submitButton.textContent="Submit"
+            form.addEventListener("submit",(event)=>{
+                event.preventDefault()
+                const newLocation=new FormData(form)
+                form.reset()
+                eventBus.publish("UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
+            })
+            formPresent=true
+        }
     }
     const spawnLocationInMain=function(locationObject){
         clearMain()
@@ -84,7 +89,9 @@ const uiHandler=(function(){
         const button=uiCreation.createDeleteLocationButton()
         main.appendChild(button)
         button.textContent="Delete Location"
-        return button
+        button.addEventListener("click",(event)=>{
+            eventBus.publish("UI_DELETE_LOCATION", locationObject)
+        })
     }
     const displayError=function(errorString){
         alert(errorString)
@@ -98,16 +105,19 @@ const uiHandler=(function(){
     }
     const selectFirstOption=function(){
         const select=document.querySelector("select")
-        select.value=select.firstElementChild.textContent
-        eventBus.publish("selectFirstOption", select.value)
+        if (document.querySelector("form")!==null){
+            return
+        } else {
+            select.value=select.firstElementChild.textContent
+            eventBus.publish("UI_SELECT_FIRST_OPTION", select.value)
+        }
     }
-    const selectLastOption=function(locationObject){
+    const selectOption=function(locationObject){
         const select=document.querySelector("select")
         select.value=locationObject.originalName
-        mediator.selectObject(select.value)
+        spawnLocationInMain(locationObject)
     }   
     return {
-        clearHeader,
         spawnSelectBox,
         updateSelectLocationBox,
         spawnNLForm,
@@ -115,7 +125,7 @@ const uiHandler=(function(){
         displayError,
         spawnResetButton,
         selectFirstOption,
-        selectLastOption
+        selectOption
     }
 }())
 export default uiHandler

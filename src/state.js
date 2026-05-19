@@ -8,7 +8,7 @@ const state=(()=>{
     }
     const addLocationObject=async function(inputLocation){
         if (detectDuplicateLocation(inputLocation)==true){
-            eventBus.publish ("addLocationObjectError", "Address already exists")
+            eventBus.publish ("STATE_ADD_LOCATION_ERROR", "Address already exists")
             return
         } else{
             try{
@@ -17,9 +17,9 @@ const state=(()=>{
                 locationList.push(keyDataObject)
                 storage.post(locationList)
                 selectBoxChange()
-                eventBus.publish("addLocationObject",keyDataObject)
+                eventBus.publish("STATE_ADD_LOCATION",keyDataObject)
             } catch(error){
-                eventBus.publish("addLocationObjectError","Invalid Address")
+                eventBus.publish("STATE_ADD_LOCATION_ERROR","Invalid Address")
             }
         }
     }
@@ -50,7 +50,7 @@ const state=(()=>{
         } else {
             locationList.splice(index,1)
             storage.post(locationList)
-            eventBus.publish("deleteLocationObject", "")
+            eventBus.publish("STATE_DELETE_LOCATION", retrieveState())
             selectBoxChange()
         }
     }
@@ -60,11 +60,17 @@ const state=(()=>{
     const clearLocationList=function(){
         locationList.splice(0)
         storage.post(locationList)
-        eventBus.publish("clearLocationList", [])
         selectBoxChange()
     }
     const selectBoxChange=function(){
-        eventBus.publish("selectBoxChange", retrieveState())
+        eventBus.publish("STATE_UPDATE", retrieveState())
+    }
+    const lastLocationObject=function(){
+        if (locationList==[]){
+            return 0
+        } else {
+            return locationList.at(-1)
+        }
     }
     return{
         initialisation,
@@ -72,7 +78,8 @@ const state=(()=>{
         getLocationObject,
         deleteLocationObject,
         retrieveState,
-        clearLocationList
+        clearLocationList,
+        lastLocationObject
         }
 })()
 export default state

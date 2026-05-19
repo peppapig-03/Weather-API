@@ -28,10 +28,14 @@ const eventBus=(function(){
         console.log(events)
         }
     }
+    const printEvents=function(){
+        console.log(events)
+    }
     return {
         subscribe,
         publish,
-        unsubscribe
+        unsubscribe,
+        printEvents
     }
 })()
 export default eventBus
