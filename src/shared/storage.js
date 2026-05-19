@@ -4,7 +4,6 @@ const storage=(()=>{
         if (localStorage.getItem("locations")===null){
             localStorage.setItem("locations", stringify([]))
         }
-        console.log(localStorage)
     }
     const stringify=function(array){
         return JSON.stringify(array)

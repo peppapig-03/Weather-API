@@ -1,22 +1,25 @@
 const eventBus=(function(){
-    const events={}
+    let events={}
     const subscribe=function(eventString,callbackFunction){
         if (!events[eventString]){
             events[eventString]=[]
         }
-        events[eventString].push(callbackFunction)
+        if (events[eventString].includes(callbackFunction)==false){
+            events[eventString].push(callbackFunction)
+        }
+        return [eventString, callbackFunction]
     }
     const unsubscribe=function(eventString,callbackFunction){
         if (!events[eventString]){
             return
         } else {
             const index=events[eventString].findIndex((callbacks)=>{
-                callbacks==callbackFunction
+                return callbacks==callbackFunction
             })
             if (index==-1){
                 return
             } else {
-                events.splice(index,1)
+                events[eventString].splice(index,1)
             }
         }
     }
@@ -25,17 +28,12 @@ const eventBus=(function(){
             events[eventString].forEach((callbackFunction)=>{
                 callbackFunction(data)
             })
-        console.log(events)
         }
-    }
-    const printEvents=function(){
-        console.log(events)
     }
     return {
         subscribe,
         publish,
-        unsubscribe,
-        printEvents
+        unsubscribe
     }
 })()
 export default eventBus

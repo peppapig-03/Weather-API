@@ -1,4 +1,4 @@
-import API from "./api.js"
+import API from "../api/api.js"
 import storage from "./storage.js"
 import eventBus from "./eventBus.js"
 const state=(()=>{
@@ -13,7 +13,6 @@ const state=(()=>{
         } else{
             try{
                 const keyDataObject=await API.fetchKeyData(inputLocation)
-                console.log(keyDataObject)
                 locationList.push(keyDataObject)
                 storage.post(locationList)
                 selectBoxChange()

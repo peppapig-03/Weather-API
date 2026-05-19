@@ -1,6 +1,6 @@
 /*NL=New Location*/
-import utils from "./utils.js"
-import eventBus from "./eventBus.js"
+import utils from "../../utils/utils.js"
+import eventBus from "../../shared/eventBus.js"
 import uiCreation from "./uiCreation.js"
 const uiHandler=(function(){
     const header=document.querySelector("header")
@@ -19,6 +19,12 @@ const uiHandler=(function(){
         while (main.firstElementChild){
             main.removeChild(main.lastElementChild)
         }
+    }
+    const clearHeader=function(){
+        while (header.firstElementChild){
+            header.removeChild(header.lastElementChild)
+        }
+        formPresent=false
     }
     const spawnSelectBox=function(){
         const select=document.createElement("select")
@@ -40,7 +46,6 @@ const uiHandler=(function(){
     }
     const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
         const select=document.querySelector("select")
-        console.log(select.lastElementChild)
         clearSelectBox(select)
         addNewLocationToSelectBox(select)
         locationObjectArray.forEach((locationObject)=>{
@@ -118,6 +123,8 @@ const uiHandler=(function(){
         spawnLocationInMain(locationObject)
     }   
     return {
+        clearMain,
+        clearHeader,
         spawnSelectBox,
         updateSelectLocationBox,
         spawnNLForm,

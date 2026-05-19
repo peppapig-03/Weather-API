@@ -1,4 +1,4 @@
-import utils from "./utils.js"
+import utils from "../utils/utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
         const httpURL=utils.httpRequestMaker(inputLocation)   
