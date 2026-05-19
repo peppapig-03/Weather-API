@@ -91,7 +91,7 @@ const uiHandler=(function(){
             div.classList.add("locationInformation")
             main.appendChild(div)
         })
-        const button=uiCreation.createDeleteLocationButton()
+        const button=uiCreation.createDeleteButton()
         main.appendChild(button)
         button.textContent="Delete Location"
         button.addEventListener("click",(event)=>{
@@ -103,19 +103,15 @@ const uiHandler=(function(){
     }
     const spawnResetButton=function(){
         const button=document.createElement("button")
-        button.classList.add("clearLocationList")
+        button.classList.add("resetButton")
         header.appendChild(button)
         button.textContent="Reset"
         return button
     }
     const selectFirstOption=function(){
         const select=document.querySelector("select")
-        if (document.querySelector("form")!==null){
-            return
-        } else {
-            select.value=select.firstElementChild.textContent
-            eventBus.publish("OPTION_UI_SELECT_FIRST_OPTION", select.value)
-        }
+        select.value=select.firstElementChild.textContent
+        eventBus.publish("OPTION_UI_SELECT_FIRST_OPTION")
     }
     const selectOption=function(locationObject){
         const select=document.querySelector("select")

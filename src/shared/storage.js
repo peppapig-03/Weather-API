@@ -22,11 +22,14 @@ const storage=(()=>{
     }
     const postEmail=function(emailArray){
         localStorage.setItem("emails", stringify(emailArray))
+        console.log(getEmailList())
     }
     const getEmailList=function(){
         return parse(localStorage.getItem("emails"))
     }
     initialisation()
+    console.log(getLocationList())
+    console.log(getEmailList())
     return {postLocation, 
         getLocationList,
         postEmail,

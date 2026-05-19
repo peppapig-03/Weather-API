@@ -4,5 +4,4 @@ import emailPage from "./pages/email/emailPage.js"
 optionPage.spawn()
 optionPage.despawn()
 emailPage.spawn()
-emailPage.despawn()
-optionPage.spawn()
+

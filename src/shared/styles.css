@@ -24,7 +24,7 @@ header >select{
     aspect-ratio:5;
     font-size:25px
 }
-#newLocationForm{
+form{
     display:flex;
     gap:10px;
     height:40%
@@ -42,14 +42,14 @@ header >select{
     background-color:#0D3B66;
     color:white;
 }
-#newLocationForm > button{
+.submitButton{
     aspect-ratio:2;
     background-color:#0D3B66;
     color:white;
     border-radius:10px;
     font-size:25px;
 }
-.clearLocationList{
+.resetButton{
     height:40%;
     aspect-ratio:3;
     background-color:#0D3B66;
@@ -65,7 +65,7 @@ main{
     background-color: #7F9DB1;
     padding-top:30px;
 }
-.deleteLocation{
+.delete{
     background-color:#0D3B66;
     height:80px;
     aspect-ratio:5;

@@ -3,8 +3,10 @@ import storage from "./storage.js"
 import eventBus from "./eventBus.js"
 const state=(()=>{
     const locationList=storage.getLocationList()
+    const emailList=storage.getEmailList()
     const optionInitialisation=function(){
-        selectBoxChange()
+        locationStateUpdate()
+        emailStateUpdate()
     }
     const addLocationObject=async function(inputLocation){
         if (detectDuplicateLocation(inputLocation)==true){
@@ -15,17 +17,11 @@ const state=(()=>{
                 const keyDataObject=await API.fetchKeyData(inputLocation)
                 locationList.push(keyDataObject)
                 storage.postLocation(locationList)
-                selectBoxChange()
+                locationStateUpdate()
                 eventBus.publish("LOCATION_STATE_ADD_LOCATION",keyDataObject)
             } catch(error){
                 eventBus.publish("LOCATION_STATE_ADD_LOCATION_ERROR","Invalid Address")
             }
-        }
-    }
-    const createStateInstance=function(){
-        return {
-            locations:structuredClone(locationList),
-            emails:structuredClone(emailList)
         }
     }
     const getLocationObject=function(locationNameString){
@@ -52,40 +48,91 @@ const state=(()=>{
         } else {
             locationList.splice(index,1)
             storage.postLocation(locationList)
-            eventBus.publish("LOCATION_STATE_DELETE_LOCATION", retrieveState().locations)
-            selectBoxChange()
+            eventBus.publish("LOCATION_STATE_DELETE_LOCATION")
+            locationStateUpdate()
         }
-    }
-    const retrieveState=function(){
-        return createStateInstance()
     }
     const clearLocationList=function(){
         locationList.splice(0)
         storage.postLocation(locationList)
-        selectBoxChange()
+        locationStateUpdate()
     }
-    const selectBoxChange=function(){
+    const locationStateUpdate=function(){
         eventBus.publish("LOCATION_STATE_UPDATE", retrieveState().locations)
     }
-    const lastLocationObject=function(){
-        if (locationList==[]){
-            return 0
-        } else {
-            return locationList.at(-1)
+/*EMAIL STARTS HERE*/
+    const emailStateUpdate=function(){
+        eventBus.publish("EMAIL_STATE_UPDATE", retrieveState().emails)
+    }
+    const detectDuplicateEmail=function(inputEmail){
+        if (emailList.filter((emailObject)=>{return emailObject.address===inputEmail}).length==0){
+            return false
+        } else{
+            return true
         }
     }
-/*EMAIL STARTS HERE*/
-    const emailList=storage.getEmailList()
-    
+    const addEmailObject=function(inputEmail){
+        console.log(detectDuplicateEmail(inputEmail))
+        if (detectDuplicateEmail(inputEmail)==false){
+            const emailObject={
+                address:inputEmail,
+                emailLocations:[],
+                noEmailLocations:retrieveState().locations,
+                locationList:retrieveState().locations
+            }
+            emailList.push(emailObject)
+            storage.postEmail(emailList)
+            emailStateUpdate()
+            eventBus.publish("EMAIL_STATE_ADD_EMAIL", emailObject)
+            return
+        } else {
+            eventBus.publish("EMAIL_STATE_ADD_EMAIL_ERROR", "Email Already Exists")
+        }
+    }
+    const getEmailObject=function(emailString){
+        const specificEmailObjectArray=emailList.filter((emailObject)=>{
+            return emailObject.address===emailString
+        })
+        if (specificEmailObjectArray.length==1){
+            return specificEmailObjectArray[0]
+        } else{
+            return "Error"
+        }
+    }
+    const deleteEmailObject=function(emailObject){
+        const index=emailList.findIndex((emailObjects)=>emailObjects===emailObject)
+        if (index==-1){
+            return
+        } else {
+            emailList.splice(index,1)
+            storage.postEmail(emailList)
+            eventBus.publish("EMAIL_STATE_DELETE_EMAIL")
+            emailStateUpdate()
+        }
+    }
+    const clearEmailList=function(){
+        emailList.splice(0)
+        storage.postEmail(emailList)
+        emailStateUpdate()
+    }
+    const retrieveState=function(){
+        return {
+            locations:structuredClone(locationList),
+            emails:structuredClone(emailList)
+        }
+    }
 
     return{
         optionInitialisation,
         addLocationObject,
         getLocationObject,
         deleteLocationObject,
-        retrieveState,
         clearLocationList,
-        lastLocationObject
+        addEmailObject,
+        getEmailObject,
+        deleteEmailObject,
+        clearEmailList,
+        retrieveState
         }
 })()
 export default state

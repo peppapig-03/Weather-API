@@ -29,7 +29,7 @@ const uiHandler=(function(){
         const select=document.createElement("select")
         header.appendChild(select)
         addNewEmailToSelectBox(select)
-/*###*/        selectFirstOption()
+        selectFirstOption()
         return select
     }
     const clearSelectBox=function(selectBox){
@@ -43,7 +43,7 @@ const uiHandler=(function(){
         option.textContent="New Email"
         selectBox.appendChild(option)
     }
-    const updateSelectLocationBox=function(emailObjectArray/*Array of email Objects*/){
+    const updateSelectEmailBox=function(emailObjectArray/*Array of email Objects*/){
         const select=document.querySelector("select")
         clearSelectBox(select)
         addNewEmailToSelectBox(select)
@@ -74,28 +74,62 @@ const uiHandler=(function(){
             submitButton.textContent="Submit"
             form.addEventListener("submit",(event)=>{
                 event.preventDefault()
-                const newLocation=new FormData(form)
+                const newEmail=new FormData(form)
                 form.reset()
-/*                eventBus.publish("OPTION_UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
-*/            })
+                eventBus.publish("EMAIL_UI_SUBMIT_NEW_EMAIL",newEmail.get("newEmail"))
+            })
             formPresent=true
         }
     }
-    const spawnEmailLocationsInMain=function(locationObject){
+    const spawnEmailLocationsInMain=function(emailObject){
         clearMain()
         removeForm()
-        Object.entries(locationObject).forEach(([key,value])=>{
+        const {address, locationList}=emailObject
+        locationList.forEach((locationObject)=>{
             const div=document.createElement("div")
-            div.textContent=`${utils.deKebab(key)} : ${value}`
+            div.textContent=`${locationObject.originalName} ${address}`
             div.classList.add("locationInformation")
             main.appendChild(div)
         })
-        const button=uiCreation.createDeleteLocationButton()
+        const button=uiCreation.createDeleteButton()
         main.appendChild(button)
-        button.textContent="Delete Location"
+        button.textContent="Delete Email"
         button.addEventListener("click",(event)=>{
-            eventBus.publish("OPTION_UI_DELETE_LOCATION", locationObject)
+            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailObject)
         })
+    }
+    const displayError=function(errorString){
+        alert(errorString)
+    }
+    const spawnResetButton=function(){
+        const button=document.createElement("button")
+        button.classList.add("resetButton")
+        header.appendChild(button)
+        button.textContent="Reset"
+        return button
+    }
+    const selectFirstOption=function(){
+        const select=document.querySelector("select")
+        select.value=select.firstElementChild.textContent
+        eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION", select.value)
+    }
+    const selectOption=function(emailObject){
+        const select=document.querySelector("select")
+        select.value=emailObject.address
+        console.log(emailObject)
+        eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailObject)
+    }
+    return {
+        spawnSelectBox,
+        spawnNEForm,
+        displayError,
+        selectOption,
+        updateSelectEmailBox,
+        spawnEmailLocationsInMain,
+        selectFirstOption,
+        spawnResetButton,
+        clearHeader,
+        clearMain
     }
 })()
 export default uiHandler

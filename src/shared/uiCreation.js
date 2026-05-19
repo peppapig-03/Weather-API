@@ -15,7 +15,6 @@ const uiCreation=(function(){
         const input=document.createElement("input")
         const label=document.createElement("label")
         const submitButton=createSubmitButton()
-        const header=document.querySelector("header")
         form.appendChild(inputBox)
         inputBox.appendChild(label)
         inputBox.appendChild(input)
@@ -27,14 +26,14 @@ const uiCreation=(function(){
             submitButton
         }
     }
-    const createDeleteLocationButton=function(){
+    const createDeleteButton=function(){
         const button=document.createElement("button")
-        button.classList.add("deleteLocation")
+        button.classList.add("delete")
         return button
     }
     return {
         createFullForm,
-        createDeleteLocationButton
+        createDeleteButton
     }
 })()
 export default uiCreation
