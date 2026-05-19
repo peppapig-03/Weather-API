@@ -1,4 +1,4 @@
-name: Testing_Automation
+name: Run_Javascript
 
 on:
   workflow_dispatch:
@@ -10,6 +10,9 @@ jobs:
       myName : Khai
     steps:
       - uses: actions/checkout@v4
-      - run: ls
+      - uses: actions/setup-node@v4
+        with: 
+          node-version: 22 
+      - run: node testAuto.js
       - run: pwd
       - run: echo "${{github.actor}} is $myName $myName"
