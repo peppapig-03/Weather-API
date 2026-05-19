@@ -2,28 +2,31 @@ import API from "../api/api.js"
 import storage from "./storage.js"
 import eventBus from "./eventBus.js"
 const state=(()=>{
-    const locationList=storage.get().locations
-    const initialisation=function(){
+    const locationList=storage.getLocationList()
+    const optionInitialisation=function(){
         selectBoxChange()
     }
     const addLocationObject=async function(inputLocation){
         if (detectDuplicateLocation(inputLocation)==true){
-            eventBus.publish ("STATE_ADD_LOCATION_ERROR", "Address already exists")
+            eventBus.publish ("LOCATION_STATE_ADD_LOCATION_ERROR", "Address already exists")
             return
         } else{
             try{
                 const keyDataObject=await API.fetchKeyData(inputLocation)
                 locationList.push(keyDataObject)
-                storage.post(locationList)
+                storage.postLocation(locationList)
                 selectBoxChange()
-                eventBus.publish("STATE_ADD_LOCATION",keyDataObject)
+                eventBus.publish("LOCATION_STATE_ADD_LOCATION",keyDataObject)
             } catch(error){
-                eventBus.publish("STATE_ADD_LOCATION_ERROR","Invalid Address")
+                eventBus.publish("LOCATION_STATE_ADD_LOCATION_ERROR","Invalid Address")
             }
         }
     }
     const createStateInstance=function(){
-        return structuredClone(locationList)
+        return {
+            locations:structuredClone(locationList),
+            emails:structuredClone(emailList)
+        }
     }
     const getLocationObject=function(locationNameString){
         const specificLocationObjectArray=locationList.filter((location)=>{
@@ -48,8 +51,8 @@ const state=(()=>{
             return
         } else {
             locationList.splice(index,1)
-            storage.post(locationList)
-            eventBus.publish("STATE_DELETE_LOCATION", retrieveState())
+            storage.postLocation(locationList)
+            eventBus.publish("LOCATION_STATE_DELETE_LOCATION", retrieveState().locations)
             selectBoxChange()
         }
     }
@@ -58,11 +61,11 @@ const state=(()=>{
     }
     const clearLocationList=function(){
         locationList.splice(0)
-        storage.post(locationList)
+        storage.postLocation(locationList)
         selectBoxChange()
     }
     const selectBoxChange=function(){
-        eventBus.publish("STATE_UPDATE", retrieveState())
+        eventBus.publish("LOCATION_STATE_UPDATE", retrieveState().locations)
     }
     const lastLocationObject=function(){
         if (locationList==[]){
@@ -71,8 +74,12 @@ const state=(()=>{
             return locationList.at(-1)
         }
     }
+/*EMAIL STARTS HERE*/
+    const emailList=storage.getEmailList()
+    
+
     return{
-        initialisation,
+        optionInitialisation,
         addLocationObject,
         getLocationObject,
         deleteLocationObject,

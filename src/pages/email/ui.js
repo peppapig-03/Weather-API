@@ -1,4 +1,4 @@
-/*NL=New Location*/
+/*NE refers to New Email*/
 import utils from "../../utils/utils.js"
 import eventBus from "../../shared/eventBus.js"
 import uiCreation from "../../shared/uiCreation.js"
@@ -10,13 +10,13 @@ const uiHandler=(function(){
         try{
             const form=document.querySelector("form")
             header.removeChild(form)
-            formPresent=false            
-        } catch{
+            formPresent=false
+        } catch(error){
             return
         }
     }
     const clearMain=function(){
-        while (main.firstElementChild){
+        while(main.firstElementChild){
             main.removeChild(main.lastElementChild)
         }
     }
@@ -24,13 +24,12 @@ const uiHandler=(function(){
         while (header.firstElementChild){
             header.removeChild(header.lastElementChild)
         }
-        formPresent=false
     }
     const spawnSelectBox=function(){
         const select=document.createElement("select")
         header.appendChild(select)
-        addNewLocationToSelectBox(select)
-        selectFirstOption()
+        addNewEmailToSelectBox(select)
+/*###*/        selectFirstOption()
         return select
     }
     const clearSelectBox=function(selectBox){
@@ -38,25 +37,25 @@ const uiHandler=(function(){
             selectBox.removeChild(selectBox.lastElementChild)
         }
     }
-    const addNewLocationToSelectBox=function(selectBox){
+    const addNewEmailToSelectBox=function(selectBox){
         const option=document.createElement("option")
-        option.value="New Location"
-        option.textContent="New Location"
+        option.value="New Email"
+        option.textContent="New Email"
         selectBox.appendChild(option)
     }
-    const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
+    const updateSelectLocationBox=function(emailObjectArray/*Array of email Objects*/){
         const select=document.querySelector("select")
         clearSelectBox(select)
-        addNewLocationToSelectBox(select)
-        locationObjectArray.forEach((locationObject)=>{
-            const locationName=locationObject.originalName
+        addNewEmailToSelectBox(select)
+        emailObjectArray.forEach((emailObject)=>{
             const option=document.createElement("option")
-            option.value=locationName
-            option.textContent=locationName
+            const email=emailObject.address
+            option.value=email
+            option.textContent=email
             select.appendChild(option)
         })
     }
-    const spawnNLForm=function(){
+    const spawnNEForm=function(){
         if (formPresent==false){
             clearMain()
             const {form,
@@ -65,24 +64,24 @@ const uiHandler=(function(){
                 submitButton
             }=uiCreation.createFullForm()
             header.appendChild(form)
-            form.id="newLocationForm"
-            label.textContent="New Location:"
-            label.setAttribute("for","newLocation")
+            form.id="newEmailForm"
+            label.textContent="New Email:"
+            label.setAttribute("for","newEmail")
             input.setAttribute("type","text")
-            input.id="newLocation"
-            input.placeholder="New Location..."
-            input.name="newLocation"
+            input.id="newEmail"
+            input.placeholder="New Email..."
+            input.name="newEmail"
             submitButton.textContent="Submit"
             form.addEventListener("submit",(event)=>{
                 event.preventDefault()
                 const newLocation=new FormData(form)
                 form.reset()
-                eventBus.publish("OPTION_UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
-            })
+/*                eventBus.publish("OPTION_UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
+*/            })
             formPresent=true
         }
     }
-    const spawnLocationInMain=function(locationObject){
+    const spawnEmailLocationsInMain=function(locationObject){
         clearMain()
         removeForm()
         Object.entries(locationObject).forEach(([key,value])=>{
@@ -98,41 +97,5 @@ const uiHandler=(function(){
             eventBus.publish("OPTION_UI_DELETE_LOCATION", locationObject)
         })
     }
-    const displayError=function(errorString){
-        alert(errorString)
-    }
-    const spawnResetButton=function(){
-        const button=document.createElement("button")
-        button.classList.add("clearLocationList")
-        header.appendChild(button)
-        button.textContent="Reset"
-        return button
-    }
-    const selectFirstOption=function(){
-        const select=document.querySelector("select")
-        if (document.querySelector("form")!==null){
-            return
-        } else {
-            select.value=select.firstElementChild.textContent
-            eventBus.publish("OPTION_UI_SELECT_FIRST_OPTION", select.value)
-        }
-    }
-    const selectOption=function(locationObject){
-        const select=document.querySelector("select")
-        select.value=locationObject.originalName
-        spawnLocationInMain(locationObject)
-    }   
-    return {
-        clearMain,
-        clearHeader,
-        spawnSelectBox,
-        updateSelectLocationBox,
-        spawnNLForm,
-        spawnLocationInMain,
-        displayError,
-        spawnResetButton,
-        selectFirstOption,
-        selectOption
-    }
-}())
+})()
 export default uiHandler

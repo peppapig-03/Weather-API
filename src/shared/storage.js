@@ -4,6 +4,9 @@ const storage=(()=>{
         if (localStorage.getItem("locations")===null){
             localStorage.setItem("locations", stringify([]))
         }
+        if (localStorage.getItem("emails")===null){
+            localStorage.setItem("emails",stringify([]))
+        }
     }
     const stringify=function(array){
         return JSON.stringify(array)
@@ -11,15 +14,23 @@ const storage=(()=>{
     const parse=function(string){
         return JSON.parse(string)
     }
-    const post=function(locationArray){
+    const postLocation=function(locationArray){
         localStorage.setItem("locations", stringify(locationArray))
     }
-    const get=function(){
-        return {
-            "locations":parse(localStorage.getItem("locations"))
-        }
+    const getLocationList=function(){
+        return parse(localStorage.getItem("locations"))
+    }
+    const postEmail=function(emailArray){
+        localStorage.setItem("emails", stringify(emailArray))
+    }
+    const getEmailList=function(){
+        return parse(localStorage.getItem("emails"))
     }
     initialisation()
-    return {post, get}
+    return {postLocation, 
+        getLocationList,
+        postEmail,
+        getEmailList
+    }
 })()
 export default storage
