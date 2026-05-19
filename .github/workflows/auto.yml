@@ -4,9 +4,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  inspect-repo:
+  practice:
     runs-on: ubuntu-24.04
+    env:
+      myName : Khai
     steps:
       - uses: actions/checkout@v4
       - run: ls
       - run: pwd
+      - run: echo "${{github.actor}} is $myName $myName"
