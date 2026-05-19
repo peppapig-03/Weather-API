@@ -1,10 +1,12 @@
-name: Hello World
+name: Testing_Automation
 
 on:
   workflow_dispatch:
 
 jobs:
-  say-hello-inline-bash:
+  inspect-repo:
     runs-on: ubuntu-24.04
     steps:
-      - run: echo "Hello from an inline bash script in a GitHub Action Workflow!"
+      - uses: actions/checkout@v4
+      - run: ls
+      - run: pwd
