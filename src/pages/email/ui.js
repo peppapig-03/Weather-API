@@ -1,5 +1,4 @@
 /*NE refers to New Email*/
-import utils from "../../utils/utils.js"
 import eventBus from "../../shared/eventBus.js"
 import uiCreation from "../../shared/uiCreation.js"
 const uiHandler=(function(){
@@ -49,9 +48,8 @@ const uiHandler=(function(){
         addNewEmailToSelectBox(select)
         emailObjectArray.forEach((emailObject)=>{
             const option=document.createElement("option")
-            const email=emailObject.address
-            option.value=email
-            option.textContent=email
+            option.value=emailObject["UUID"]
+            option.textContent=emailObject.address
             select.appendChild(option)
         })
     }
@@ -91,11 +89,14 @@ const uiHandler=(function(){
             div.classList.add("locationInformation")
             main.appendChild(div)
         })
+        const div=document.createElement("div")
+        main.appendChild(div)
+        div.textContent=address
         const button=uiCreation.createDeleteButton()
         main.appendChild(button)
         button.textContent="Delete Email"
-        button.addEventListener("click",(event)=>{
-            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailObject)
+        button.addEventListener("click",()=>{
+            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailObject["UUID"])
         })
     }
     const displayError=function(errorString){
@@ -115,8 +116,7 @@ const uiHandler=(function(){
     }
     const selectOption=function(emailObject){
         const select=document.querySelector("select")
-        select.value=emailObject.address
-        console.log(emailObject)
+        select.value=emailObject["UUID"]
         eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailObject)
     }
     return {

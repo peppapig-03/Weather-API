@@ -2,22 +2,22 @@ import uiHandler from "./ui.js"
 import state from "../../shared/state.js"
 import eventBus from "../../shared/eventBus.js"
 import "../../shared/styles.css"
-const optionPage=(function(){
+const locationPage=(function(){
     const subscriptions=[]
     const spawnLocationSelectBox=function(){
         const select=uiHandler.spawnSelectBox()
         select.addEventListener("change",(event)=>{
             if (event.target.value=="New Location"){
-                eventBus.publish("OPTION_UI_SELECT_FIRST_OPTION")
+                eventBus.publish("LOCATION_UI_SELECT_FIRST_OPTION")
             } else{
-                eventBus.publish("OPTION_UI_SELECT_LOCATION", state.getLocationObject(event.target.value))
+                eventBus.publish("LOCATION_UI_SELECT_LOCATION", state.getLocationObject(event.target.value))
             } 
         })    
     }
     const spawnResetButton=function(){
         const button=uiHandler.spawnResetButton()
         button.addEventListener("click", ()=>{
-            eventBus.publish("OPTION_UI_RESET")
+            eventBus.publish("LOCATION_UI_RESET")
         })
     }
     const renderInitialisation=function(){
@@ -31,23 +31,23 @@ const optionPage=(function(){
         subscriptions.splice(0)
     }
     const spawn = function () {
-        subscriptions.push(eventBus.subscribe("OPTION_UI_RESET", state.clearLocationList))
-        subscriptions.push(eventBus.subscribe("OPTION_UI_RESET", uiHandler.selectFirstOption))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_SUBMIT_NEW_LOCATION", state.addLocationObject))
+        subscriptions.push(eventBus.subscribe("LOCATION_STATE_UPDATE", uiHandler.updateSelectLocationBox))
         subscriptions.push(eventBus.subscribe("LOCATION_STATE_ADD_LOCATION", uiHandler.selectOption))
         subscriptions.push(eventBus.subscribe("LOCATION_STATE_ADD_LOCATION_ERROR",uiHandler.displayError))
-        subscriptions.push(eventBus.subscribe("OPTION_UI_SELECT_FIRST_OPTION", uiHandler.spawnNLForm))
-        subscriptions.push(eventBus.subscribe("LOCATION_STATE_UPDATE", uiHandler.updateSelectLocationBox))
-        subscriptions.push(eventBus.subscribe("OPTION_UI_DELETE_LOCATION", state.deleteLocationObject))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_SELECT_LOCATION", uiHandler.spawnLocationInMain))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_DELETE_LOCATION", state.deleteLocationObject))
         subscriptions.push(eventBus.subscribe("LOCATION_STATE_DELETE_LOCATION", uiHandler.selectFirstOption))
-        subscriptions.push(eventBus.subscribe("OPTION_UI_SELECT_LOCATION", uiHandler.spawnLocationInMain))
-        subscriptions.push(eventBus.subscribe("OPTION_UI_SUBMIT_NEW_LOCATION", state.addLocationObject))
-        subscriptions.push(eventBus.subscribe("OPTION_PAGE_DESPAWN", uiHandler.clearHeader))
-        subscriptions.push(eventBus.subscribe("OPTION_PAGE_DESPAWN", uiHandler.clearMain))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_SELECT_FIRST_OPTION", uiHandler.spawnNLForm))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_RESET", state.clearLocationCollection))
+        subscriptions.push(eventBus.subscribe("LOCATION_UI_RESET", uiHandler.selectFirstOption))
+        subscriptions.push(eventBus.subscribe("LOCATION_PAGE_DESPAWN", uiHandler.clearHeader))
+        subscriptions.push(eventBus.subscribe("LOCATION_PAGE_DESPAWN", uiHandler.clearMain))
         renderInitialisation()
         state.optionInitialisation()
     }
     const despawn = function (){
-        eventBus.publish("OPTION_PAGE_DESPAWN")
+        eventBus.publish("LOCATION_PAGE_DESPAWN")
         unsubscribeAll()
     }
     const currentLocations=function(){
@@ -59,4 +59,4 @@ const optionPage=(function(){
         despawn
     }
 })()
-export default optionPage
+export default locationPage

@@ -28,6 +28,7 @@ const eventBus=(function(){
             events[eventString].forEach((callbackFunction)=>{
                 callbackFunction(data)
             })
+        console.log(events)
         }
     }
     return {

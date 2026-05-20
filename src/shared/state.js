@@ -2,11 +2,21 @@ import API from "../api/api.js"
 import storage from "./storage.js"
 import eventBus from "./eventBus.js"
 const state=(()=>{
-    const locationList=storage.getLocationList()
-    const emailList=storage.getEmailList()
+    const locationCollection=storage.getLocationCollection()
+    const emailCollection=storage.getEmailCollection()
     const optionInitialisation=function(){
         locationStateUpdate()
         emailStateUpdate()
+    }
+    const detectDuplicateLocationUUID=function(UUID){
+        return Object.hasOwn(locationCollection, UUID)
+    }
+    const locationUUIDGenerator=function(){
+        let UUID=crypto.randomUUID()
+        while (detectDuplicateLocationUUID(UUID)==true){
+            UUID=crypto.randomUUID()
+        }
+        return UUID
     }
     const addLocationObject=async function(inputLocation){
         if (detectDuplicateLocation(inputLocation)==true){
@@ -15,8 +25,9 @@ const state=(()=>{
         } else{
             try{
                 const keyDataObject=await API.fetchKeyData(inputLocation)
-                locationList.push(keyDataObject)
-                storage.postLocation(locationList)
+                keyDataObject["UUID"]=locationUUIDGenerator()
+                locationCollection[keyDataObject["UUID"]]=keyDataObject
+                storage.postLocation(locationCollection)
                 locationStateUpdate()
                 eventBus.publish("LOCATION_STATE_ADD_LOCATION",keyDataObject)
             } catch(error){
@@ -24,37 +35,36 @@ const state=(()=>{
             }
         }
     }
-    const getLocationObject=function(locationNameString){
-        const specificLocationObjectArray=locationList.filter((location)=>{
-            return location.originalName===locationNameString
-        })
-        if (specificLocationObjectArray.length==1){
-            return specificLocationObjectArray[0]
+    const getLocationObject=function(locationUUID){
+        const locationObject=locationCollection[locationUUID]
+        if (locationObject){
+            return locationObject
         } else{
             return "Error"
         }
     }
-    const detectDuplicateLocation=function(locationNameString){
-        if(locationList.find(location=>location.originalName==locationNameString)!=undefined){
+    const detectDuplicateLocation=function(locationInputString){
+        if(retrieveState().locations.find((locationObject)=>locationObject.originalName===locationInputString)){
             return true
         } else{
             return false
         }
     }
-    const deleteLocationObject=function(locationObject){
-        const index=locationList.findIndex((location)=>location===locationObject)
-        if (index==-1){
-            return
-        } else {
-            locationList.splice(index,1)
-            storage.postLocation(locationList)
+    const deleteLocationObject=function(locationUUID){
+        if (locationCollection[locationUUID]){
+            delete locationCollection[locationUUID]
+            storage.postLocation(locationCollection)
             eventBus.publish("LOCATION_STATE_DELETE_LOCATION")
             locationStateUpdate()
+        } else {
+            return
         }
     }
-    const clearLocationList=function(){
-        locationList.splice(0)
-        storage.postLocation(locationList)
+    const clearLocationCollection=function(){
+        Object.keys(locationCollection).forEach((UUIDKey)=>{
+            delete locationCollection[UUIDKey]
+        })
+        storage.postLocation(locationCollection)
         locationStateUpdate()
     }
     const locationStateUpdate=function(){
@@ -64,24 +74,35 @@ const state=(()=>{
     const emailStateUpdate=function(){
         eventBus.publish("EMAIL_STATE_UPDATE", retrieveState().emails)
     }
-    const detectDuplicateEmail=function(inputEmail){
-        if (emailList.filter((emailObject)=>{return emailObject.address===inputEmail}).length==0){
-            return false
-        } else{
+    const emailUUIDGenerator=function(){
+        let UUID=crypto.randomUUID()
+        while (detectDuplicateEmailUUID(UUID)){
+            UUID=crypto.randomUUID()
+        }
+        return UUID
+    }
+    const detectDuplicateEmailUUID=function(UUID){
+        return Object.hasOwn(emailCollection, UUID)
+    }
+    const detectDuplicateEmail=function(inputEmailString){
+        if (retrieveState().emails.find((emailObjects)=>emailObjects.address===inputEmailString)){
             return true
+        } else{
+            return false
         }
     }
-    const addEmailObject=function(inputEmail){
-        console.log(detectDuplicateEmail(inputEmail))
-        if (detectDuplicateEmail(inputEmail)==false){
+    const addEmailObject=function(inputEmailString){
+        if (detectDuplicateEmail(inputEmailString)==false){
+            const emailUUID=emailUUIDGenerator()
             const emailObject={
-                address:inputEmail,
+                address:inputEmailString,
                 emailLocations:[],
                 noEmailLocations:retrieveState().locations,
-                locationList:retrieveState().locations
+                locationList:retrieveState().locations,
+                UUID:emailUUID
             }
-            emailList.push(emailObject)
-            storage.postEmail(emailList)
+            emailCollection[emailUUID]=emailObject
+            storage.postEmail(emailCollection)
             emailStateUpdate()
             eventBus.publish("EMAIL_STATE_ADD_EMAIL", emailObject)
             return
@@ -89,36 +110,35 @@ const state=(()=>{
             eventBus.publish("EMAIL_STATE_ADD_EMAIL_ERROR", "Email Already Exists")
         }
     }
-    const getEmailObject=function(emailString){
-        const specificEmailObjectArray=emailList.filter((emailObject)=>{
-            return emailObject.address===emailString
-        })
-        if (specificEmailObjectArray.length==1){
-            return specificEmailObjectArray[0]
+    const getEmailObject=function(emailUUID){
+        if (emailCollection[emailUUID]){
+            return emailCollection[emailUUID]
         } else{
             return "Error"
         }
     }
-    const deleteEmailObject=function(emailObject){
-        const index=emailList.findIndex((emailObjects)=>emailObjects===emailObject)
-        if (index==-1){
-            return
-        } else {
-            emailList.splice(index,1)
-            storage.postEmail(emailList)
+    const deleteEmailObject=function(emailUUID){
+        if (emailCollection[emailUUID]){
+            delete emailCollection[emailUUID]
+            storage.postEmail(emailCollection)
             eventBus.publish("EMAIL_STATE_DELETE_EMAIL")
             emailStateUpdate()
+            return
+        } else {
+            return
         }
     }
-    const clearEmailList=function(){
-        emailList.splice(0)
-        storage.postEmail(emailList)
+    const clearEmailCollection=function(){
+        Object.keys(emailCollection).forEach((UUIDkey)=>{
+            delete emailCollection[UUIDkey]
+        })
+        storage.postEmail(emailCollection)
         emailStateUpdate()
     }
     const retrieveState=function(){
         return {
-            locations:structuredClone(locationList),
-            emails:structuredClone(emailList)
+            locations:structuredClone(Object.values(locationCollection)),
+            emails:structuredClone(Object.values(emailCollection))
         }
     }
 
@@ -127,11 +147,11 @@ const state=(()=>{
         addLocationObject,
         getLocationObject,
         deleteLocationObject,
-        clearLocationList,
+        clearLocationCollection,
         addEmailObject,
         getEmailObject,
         deleteEmailObject,
-        clearEmailList,
+        clearEmailCollection,
         retrieveState
         }
 })()

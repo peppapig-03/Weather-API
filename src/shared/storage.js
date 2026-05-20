@@ -2,7 +2,7 @@ const storage=(()=>{
     const localStorage=window.localStorage
     const initialisation=function(){
         if (localStorage.getItem("locations")===null){
-            localStorage.setItem("locations", stringify([]))
+            localStorage.setItem("locations", stringify({}))
         }
         if (localStorage.getItem("emails")===null){
             localStorage.setItem("emails",stringify([]))
@@ -14,26 +14,25 @@ const storage=(()=>{
     const parse=function(string){
         return JSON.parse(string)
     }
-    const postLocation=function(locationArray){
-        localStorage.setItem("locations", stringify(locationArray))
+    const postLocation=function(locationCollection){
+        localStorage.setItem("locations", stringify(locationCollection))
     }
-    const getLocationList=function(){
+    const getLocationCollection=function(){
         return parse(localStorage.getItem("locations"))
     }
-    const postEmail=function(emailArray){
-        localStorage.setItem("emails", stringify(emailArray))
-        console.log(getEmailList())
+    const postEmail=function(emailCollection){
+        localStorage.setItem("emails", stringify(emailCollection))
     }
-    const getEmailList=function(){
+    const getEmailCollection=function(){
         return parse(localStorage.getItem("emails"))
     }
     initialisation()
-    console.log(getLocationList())
-    console.log(getEmailList())
+    console.log(getLocationCollection())
+    console.log(getEmailCollection())
     return {postLocation, 
-        getLocationList,
+        getLocationCollection,
         postEmail,
-        getEmailList
+        getEmailCollection
     }
 })()
 export default storage

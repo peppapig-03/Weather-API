@@ -17,7 +17,7 @@ header {
 }
 header >select{
     height:40%;
-    padding:10px;
+    padding:0px 10px;
     background-color:#0D3B66;
     color:white;
     border-radius:5px;

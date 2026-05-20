@@ -1,6 +1,7 @@
-import optionPage from "./pages/options/optionPage.js"
+import locationPage from "./pages/location/locationPage.js"
 import emailPage from "./pages/email/emailPage.js"
-optionPage.spawn()
-optionPage.despawn()
+locationPage.spawn()
+locationPage.despawn()
 emailPage.spawn()
+
 

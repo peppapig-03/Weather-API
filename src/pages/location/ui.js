@@ -49,10 +49,9 @@ const uiHandler=(function(){
         clearSelectBox(select)
         addNewLocationToSelectBox(select)
         locationObjectArray.forEach((locationObject)=>{
-            const locationName=locationObject.originalName
             const option=document.createElement("option")
-            option.value=locationName
-            option.textContent=locationName
+            option.value=locationObject["UUID"]
+            option.textContent=locationObject.originalName
             select.appendChild(option)
         })
     }
@@ -77,7 +76,7 @@ const uiHandler=(function(){
                 event.preventDefault()
                 const newLocation=new FormData(form)
                 form.reset()
-                eventBus.publish("OPTION_UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
+                eventBus.publish("LOCATION_UI_SUBMIT_NEW_LOCATION",newLocation.get("newLocation"))
             })
             formPresent=true
         }
@@ -94,8 +93,8 @@ const uiHandler=(function(){
         const button=uiCreation.createDeleteButton()
         main.appendChild(button)
         button.textContent="Delete Location"
-        button.addEventListener("click",(event)=>{
-            eventBus.publish("OPTION_UI_DELETE_LOCATION", locationObject)
+        button.addEventListener("click",()=>{
+            eventBus.publish("LOCATION_UI_DELETE_LOCATION", locationObject["UUID"])
         })
     }
     const displayError=function(errorString){
@@ -111,12 +110,12 @@ const uiHandler=(function(){
     const selectFirstOption=function(){
         const select=document.querySelector("select")
         select.value=select.firstElementChild.textContent
-        eventBus.publish("OPTION_UI_SELECT_FIRST_OPTION")
+        eventBus.publish("LOCATION_UI_SELECT_FIRST_OPTION")
     }
     const selectOption=function(locationObject){
         const select=document.querySelector("select")
-        select.value=locationObject.originalName
-        spawnLocationInMain(locationObject)
+        select.value=locationObject["UUID"]
+        eventBus.publish("LOCATION_UI_SELECT_LOCATION", locationObject)
     }   
     return {
         clearMain,

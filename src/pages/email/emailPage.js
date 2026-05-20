@@ -41,7 +41,7 @@ const emailPage=(function(){
         subscriptions.push(eventBus.subscribe("EMAIL_UI_SELECT_EMAIL", uiHandler.spawnEmailLocationsInMain))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_DELETE_EMAIL", state.deleteEmailObject))
         subscriptions.push(eventBus.subscribe("EMAIL_STATE_DELETE_EMAIL", uiHandler.selectFirstOption))
-        subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", state.clearEmailList))
+        subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", state.clearEmailCollection))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", uiHandler.selectFirstOption))
         subscriptions.push(eventBus.subscribe("EMAIL_PAGE_DESPAWN", uiHandler.clearMain))
         subscriptions.push(eventBus.subscribe("EMAIL_PAGE_DESPAWN", uiHandler.clearHeader))
