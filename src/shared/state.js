@@ -44,7 +44,7 @@ const state=(()=>{
         }
     }
     const detectDuplicateLocation=function(locationInputString){
-        if(retrieveState().locations.find((locationObject)=>locationObject.originalName===locationInputString)){
+        if(Object.values(locationCollection).find((locationObject)=>locationObject.originalName===locationInputString)){
             return true
         } else{
             return false
@@ -85,7 +85,7 @@ const state=(()=>{
         return Object.hasOwn(emailCollection, UUID)
     }
     const detectDuplicateEmail=function(inputEmailString){
-        if (retrieveState().emails.find((emailObjects)=>emailObjects.address===inputEmailString)){
+        if (Object.values(emailCollection).find((emailObjects)=>emailObjects.address===inputEmailString)){
             return true
         } else{
             return false
@@ -96,9 +96,7 @@ const state=(()=>{
             const emailUUID=emailUUIDGenerator()
             const emailObject={
                 address:inputEmailString,
-                emailLocations:[],
-                noEmailLocations:retrieveState().locations,
-                locationList:retrieveState().locations,
+                emailLocationsUUID:[],
                 UUID:emailUUID
             }
             emailCollection[emailUUID]=emailObject
@@ -112,7 +110,7 @@ const state=(()=>{
     }
     const getEmailObject=function(emailUUID){
         if (emailCollection[emailUUID]){
-            return emailCollection[emailUUID]
+            eventBus.publish("EMAIL_STATE_GET_EMAIL", emailCollection[emailUUID], retrieveState().locations)
         } else{
             return "Error"
         }

@@ -12,7 +12,7 @@ const emailPage=(function(){
             if (event.target.value=="New Email"){
                 eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION")
             } else {
-                eventBus.publish("EMAIL_UI_SELECT_EMAIL", state.getEmailObject(event.target.value))
+                eventBus.publish("EMAIL_UI_SELECT_EMAIL", event.target.value)
             }
         })
     }
@@ -38,7 +38,8 @@ const emailPage=(function(){
         subscriptions.push(eventBus.subscribe("EMAIL_STATE_ADD_EMAIL_ERROR",uiHandler.displayError))
         subscriptions.push(eventBus.subscribe("EMAIL_STATE_ADD_EMAIL",uiHandler.selectOption))
         subscriptions.push(eventBus.subscribe("EMAIL_STATE_UPDATE", uiHandler.updateSelectEmailBox))
-        subscriptions.push(eventBus.subscribe("EMAIL_UI_SELECT_EMAIL", uiHandler.spawnEmailLocationsInMain))
+        subscriptions.push(eventBus.subscribe("EMAIL_UI_SELECT_EMAIL", state.getEmailObject))
+        subscriptions.push(eventBus.subscribe("EMAIL_STATE_GET_EMAIL", uiHandler.spawnEmailLocationsInMain))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_DELETE_EMAIL", state.deleteEmailObject))
         subscriptions.push(eventBus.subscribe("EMAIL_STATE_DELETE_EMAIL", uiHandler.selectFirstOption))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", state.clearEmailCollection))

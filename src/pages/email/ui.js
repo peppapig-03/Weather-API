@@ -79,19 +79,21 @@ const uiHandler=(function(){
             formPresent=true
         }
     }
-    const spawnEmailLocationsInMain=function(emailObject){
+    const spawnEmailLocationsInMain=function(emailObject, locationList){
         clearMain()
         removeForm()
-        const {address, locationList}=emailObject
+        const {address, emailLocationsUUID}=emailObject
         locationList.forEach((locationObject)=>{
             const div=document.createElement("div")
-            div.textContent=`${locationObject.originalName} ${address}`
+            div.textContent=`${locationObject.originalName} : `
             div.classList.add("locationInformation")
             main.appendChild(div)
+            if (emailLocationsUUID.includes(locationObject["UUID"])){
+                div.textContent+=`Subscribed by ${address}`
+            } else{
+                div.textContent+=`Not Subscribed`
+            }
         })
-        const div=document.createElement("div")
-        main.appendChild(div)
-        div.textContent=address
         const button=uiCreation.createDeleteButton()
         main.appendChild(button)
         button.textContent="Delete Email"
@@ -117,7 +119,7 @@ const uiHandler=(function(){
     const selectOption=function(emailObject){
         const select=document.querySelector("select")
         select.value=emailObject["UUID"]
-        eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailObject)
+        eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailObject["UUID"])
     }
     return {
         spawnSelectBox,

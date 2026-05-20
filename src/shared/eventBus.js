@@ -23,12 +23,11 @@ const eventBus=(function(){
             }
         }
     }
-    const publish=function(eventString, data){
+    const publish=function(eventString, ...data){
         if (events[eventString]){
             events[eventString].forEach((callbackFunction)=>{
-                callbackFunction(data)
+                callbackFunction(...data)
             })
-        console.log(events)
         }
     }
     return {

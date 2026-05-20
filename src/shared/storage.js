@@ -16,16 +16,23 @@ const storage=(()=>{
     }
     const postLocation=function(locationCollection){
         localStorage.setItem("locations", stringify(locationCollection))
+        print()
     }
     const getLocationCollection=function(){
         return parse(localStorage.getItem("locations"))
     }
     const postEmail=function(emailCollection){
         localStorage.setItem("emails", stringify(emailCollection))
+        print()
     }
     const getEmailCollection=function(){
         return parse(localStorage.getItem("emails"))
     }
+    const print=function(){
+        console.log(getLocationCollection())
+        console.log(getEmailCollection())
+    }
+    postEmail({})
     initialisation()
     console.log(getLocationCollection())
     console.log(getEmailCollection())
