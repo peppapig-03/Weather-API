@@ -52,12 +52,20 @@ emailRouter.delete("/delete/:email", async(req,res)=>{
 emailRouter.get("/:email", async (req,res)=>{
     try{
         const data=await pool.query(`SELECT * FROM emails WHERE emailAddress=$1`,[req.params.email])
-        res.json(data.rows)
+        if (data.rowCount==0){
+            res.status(500).json({
+                error:"Email is not in database"
+            })
+        } else{
+            res.json(data.rows)
+        }
     } catch(error){
         res.status(500).json({
             error:"GET ERROR"
         })
     }
 })
+
+
 
 export default emailRouter
