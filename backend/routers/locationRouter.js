@@ -1,5 +1,6 @@
 import express from "express"
 import pool from "../sql/pool.js"
+import API from "../api/api.js"
 
 const locationRouter=express.Router()
 
@@ -9,19 +10,33 @@ locationRouter.get("/all", async (req,res)=>{
         res.json(data.rows)
     } catch(error){
         res.status(500).json({
-            error:"GET ERROR"
+            status:500,
+            error:"GET_ERROR"
         })
     }
 })
-locationRouter.post("/new", async(req,res)=>{
+locationRouter.post("/new", 
+    async(req,res,next)=>{
+        try{
+            await API.fetchKeyData(req.body.originalName)
+            next()
+        } catch(error) {
+            res.status(error.status).json({
+                status:error.status,
+                error:error.message
+            })
+        }
+    },
+    async(req,res)=>{
     try{
         await pool.query(`INSERT INTO locations(originalName) VALUES ($1)`, [req.body.originalName])
         res.json({
-            message:"POST SUCCESS"
+            message:"POST_SUCCESS"
         })
     } catch(error){
-        res.status(500).json({
-            error:"POST ERROR"
+        res.status(400).json({
+            status:400,
+            error:"POST_ERROR"
         })
     }
 })
@@ -29,11 +44,12 @@ locationRouter.delete("/delete/all", async(req,res)=>{
     try{
         await pool.query(`DELETE FROM locations`)
         res.json({
-            message:"DELETE ALL SUCCESS"
+            message:"DELETE_ALL_SUCCESS"
         })
     } catch(error){
         res.status(500).json({
-            error:"DELETE ALL ERROR"
+            status:500,
+            error:"DELETE_ALL_ERROR"
         })
     }
 })
@@ -41,23 +57,47 @@ locationRouter.delete("/delete/:location", async(req,res)=>{
     try{
         await pool.query(`DELETE FROM locations WHERE originalName=$1`, [req.params.location])
         res.json({
-            message:"DELETE SUCCESS"
+            message:"DELETE_SUCCESS"
         })
     } catch(error){
-        res.status(500).json({
-            error:"DELETE ERROR"
+        res.status(400).json({
+            status:400,
+            error:"DELETE_ERROR"
         })
     }
 })
-locationRouter.get("/:location", async (req,res)=>{
-    try{
-        const data=await pool.query(`SELECT * FROM locations WHERE originalName=$1`,[req.params.location])
-        res.json(data.rows)
-    } catch(error){
-        res.status(500).json({
-            error:"GET ERROR"
-        })
+locationRouter.get("/:location",
+    async (req,res,next)=>{
+        try{
+            const data=await pool.query(`SELECT * FROM locations WHERE originalName=$1`,[req.params.location])
+            if (data.rowCount==0){
+                res.status(404).json({
+                    status:404,
+                    error:"LOCATION_NOT_FOUND"
+                })
+            } else {
+                next()
+            }
+        } catch(error){
+            res.status(500).json({
+                status:500,
+                error:"GET_ERROR"
+            })
+        }
+    },
+    async (req,res)=>{
+        try{
+            const weatherData=await API.fetchKeyData(req.params.location)
+            console.log(weatherData)
+            res.json(weatherData)
+        } catch(error){
+            res.status(error.status).json({
+                status:error.status,
+                error:error.message
+            })
+        }
     }
-})
+
+)
 
 export default locationRouter

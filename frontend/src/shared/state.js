@@ -1,63 +1,50 @@
 import API from "../api/api.js"
 import storage from "./storage.js"
 import eventBus from "./eventBus.js"
+import backend from "./backend.js"
 const state=(()=>{
-    const locationCollection=storage.getLocationCollection()
-    const emailCollection=storage.getEmailCollection()
-    const optionInitialisation=function(){
+    let locationList
+    let emailList
+    const dataInitialisation=async function(){
+        try{
+            locationList=await backend.fetchAllLocations()
+            emailList=await backend.fetchAllLocations()
+        } catch(error){
+            console.log(error)
+        }
+    }
+    const optionInitialisation=async function(){
+        await dataInitialisation()
         locationStateUpdate()
         emailStateUpdate()
     }
-    const detectDuplicateLocationUUID=function(UUID){
-        return Object.hasOwn(locationCollection, UUID)
+    
+    const addLocation=async function(inputLocation){
+        try{
+            const response=await backend.postLocation(inputLocation)
+            return response
+        } catch(error){
+            alert(`Error: ${error.status} ${error.message}`) 
+            throw error   
+            /*eventBus.publish("LOCATION_STATE_ADD_LOCATION_ERROR","Invalid Address")
+        */}
     }
-    const locationUUIDGenerator=function(){
-        let UUID=crypto.randomUUID()
-        while (detectDuplicateLocationUUID(UUID)==true){
-            UUID=crypto.randomUUID()
-        }
-        return UUID
-    }
-    const addLocationObject=async function(inputLocation){
-        if (detectDuplicateLocation(inputLocation)==true){
-            eventBus.publish ("LOCATION_STATE_ADD_LOCATION_ERROR", "Address already exists")
-            return
-        } else{
-            try{
-                const keyDataObject=await API.fetchKeyData(inputLocation)
-                keyDataObject["UUID"]=locationUUIDGenerator()
-                locationCollection[keyDataObject["UUID"]]=keyDataObject
-                storage.postLocation(locationCollection)
-                locationStateUpdate()
-                eventBus.publish("LOCATION_STATE_ADD_LOCATION",keyDataObject)
-            } catch(error){
-                eventBus.publish("LOCATION_STATE_ADD_LOCATION_ERROR","Invalid Address")
-            }
-        }
-    }
-    const getLocationObject=function(locationUUID){
-        const locationObject=locationCollection[locationUUID]
-        if (locationObject){
+    const getLocationObject=async function(inputLocation){
+        try{
+            const locationObject=await backend.getLocation(inputLocation)
             return locationObject
-        } else{
-            return "Error"
+        } catch(error){
+            alert(`Error: ${error.status} ${error.message}`)
+            throw error
         }
     }
-    const detectDuplicateLocation=function(locationInputString){
-        if(Object.values(locationCollection).find((locationObject)=>locationObject.originalName===locationInputString)){
-            return true
-        } else{
-            return false
-        }
-    }
-    const deleteLocationObject=function(locationUUID){
-        if (locationCollection[locationUUID]){
-            delete locationCollection[locationUUID]
-            storage.postLocation(locationCollection)
-            eventBus.publish("LOCATION_STATE_DELETE_LOCATION")
-            locationStateUpdate()
-        } else {
-            return
+    const deleteLocation=async function(inputLocation){
+        try{
+            const response=await backend.deleteLocation(inputLocation)
+            return response.message
+        } catch(error){
+            alert(`Error: ${error.status} ${error.message}`)
+            throw error
         }
     }
     const clearLocationCollection=function(){
@@ -142,9 +129,9 @@ const state=(()=>{
 
     return{
         optionInitialisation,
-        addLocationObject,
+        addLocation,
         getLocationObject,
-        deleteLocationObject,
+        deleteLocation,
         clearLocationCollection,
         addEmailObject,
         getEmailObject,
