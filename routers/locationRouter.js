@@ -4,23 +4,45 @@ import API from "../api/api.js"
 
 const locationRouter=express.Router()
 
-locationRouter.get("/all", async (req,res)=>{
-    try{
-        const data=await pool.query(`SELECT * FROM locations`)
-        res.json(data.rows)
-    } catch(error){
-        res.status(500).json({
-            status:500,
-            error:"GET_ERROR"
-        })
+locationRouter.get("/all", 
+    async (req,res,next)=>{
+        try{
+            const data=await pool.query(`SELECT * FROM locations`)
+            req.allData=data.rows.map((locationRow)=>locationRow.originalname)
+            next()
+        } catch(error){
+            res.status(500).json({
+                status:500,
+                error:"GET_ERROR"
+            })
+        }
+    },
+    async (req,res)=>{
+        try{
+            console.log(req.allData)
+            const allWeatherData=await Promise.all(
+                req.allData.map(async (locationName)=>{
+                    const weatherData=await API.fetchKeyData(locationName)
+                    return weatherData
+                })
+            )
+            console.log(allWeatherData)
+            res.json(allWeatherData)
+        } catch(error) {
+            res.status(error.status).json({
+                status:error.status,
+                error:error.message
+            })
+        }
     }
-})
+)
 locationRouter.post("/new", 
     async(req,res,next)=>{
         try{
             await API.fetchKeyData(req.body.originalName)
             next()
         } catch(error) {
+            console.log(error.message, error.status)
             res.status(error.status).json({
                 status:error.status,
                 error:error.message
@@ -55,7 +77,9 @@ locationRouter.delete("/delete/all", async(req,res)=>{
 })
 locationRouter.delete("/delete/:location", async(req,res)=>{
     try{
+        console.log(req.originalUrl)
         await pool.query(`DELETE FROM locations WHERE originalName=$1`, [req.params.location])
+        logAllLocations()
         res.json({
             message:"DELETE_SUCCESS"
         })
@@ -69,6 +93,7 @@ locationRouter.delete("/delete/:location", async(req,res)=>{
 locationRouter.get("/:location",
     async (req,res,next)=>{
         try{
+            console.log(req.params.location)
             const data=await pool.query(`SELECT * FROM locations WHERE originalName=$1`,[req.params.location])
             if (data.rowCount==0){
                 res.status(404).json({
@@ -76,6 +101,7 @@ locationRouter.get("/:location",
                     error:"LOCATION_NOT_FOUND"
                 })
             } else {
+                logAllLocations()
                 next()
             }
         } catch(error){
@@ -88,7 +114,6 @@ locationRouter.get("/:location",
     async (req,res)=>{
         try{
             const weatherData=await API.fetchKeyData(req.params.location)
-            console.log(weatherData)
             res.json(weatherData)
         } catch(error){
             res.status(error.status).json({
@@ -99,5 +124,9 @@ locationRouter.get("/:location",
     }
 
 )
+const logAllLocations=async function(){
+    const data=await pool.query("Select * from locations")
+    console.log(data.rows)
+}
 
 export default locationRouter

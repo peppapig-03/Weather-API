@@ -14,6 +14,7 @@ const API=(function(){
             const errorMessages={
                 "400":"BAD_REQUEST",
                 "401":"UNAUTHORISED",
+                "404":"NOT_FOUND",
                 "429":"TOO_MANY_REQUESTS",
                 "500":"API_SERVER_ERROR"
             }
