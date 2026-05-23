@@ -26,7 +26,7 @@ const backend=(function(){
         if (!synth.error){
             return synth
         } else{
-            const space=synth.error.search(" ")
+            console.log(222)
             const newError=new Error(synth.error)
             newError.status=parseInt(synth.status)
             throw newError

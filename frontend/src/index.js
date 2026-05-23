@@ -1,7 +1,44 @@
 import locationPage from "./pages/location/locationPage.js"
-import emailPage from "./pages/email/emailPage.js"
-import backend from "./pages/location/backend.js"
-import state from "./pages/location/state.js"
+import uiCreation from "./shared/uiCreation.js"
+const footer=document.querySelector("footer")
+const clearFooter=function(){
+    while(footer.firstElementChild){
+        footer.removeChild(footer.lastElementChild)
+    }
+}
+const spawnFooterButton=function(){
+    const footerButton=uiCreation.createFooterButton()
+    footer.appendChild(footerButton)
+    if(locationPage.presence()==true){
+        console.log(locationPage.presence())
+        footerButton.textContent="EMAILS"
+        footerButton.addEventListener("click",(event)=>{
+            spawnEmailPage()
+        })
+    } else{
+        console.log(locationPage.presence())
+        footerButton.textContent="LOCATIONS"
+        footerButton.addEventListener("click", (event)=>{
+            spawnLocationPage()
+        })
+    }
+}
+const spawnLocationPage=function(){
+    clearFooter()
+    locationPage.despawn()
+    locationPage.spawn()
+    spawnFooterButton()
+}
+const spawnEmailPage=function(){
+    clearFooter()
+    locationPage.despawn()
+    spawnFooterButton()
+}
+const run=function(){
+    spawnLocationPage()
+}
+run()
+/*import emailPage from "./pages/email/emailPage.js"*/
 /*
 const getEmail=async function(emailAddress){
     const data=await fetch(`http://localhost:4000/emails/${emailAddress}`)
@@ -112,20 +149,3 @@ const getAllLocations=async function(){
     }
 }
 */
-const run = async function(){
-    try{
-        console.log(await backend.fetchAllLocations())
-        console.log(await state.addLocation("Bandar Utama"))
-        console.log(await state.addLocation("Toa Payoh"))
-        console.log(await state.addLocation("Singapore"))
-        console.log(await backend.fetchAllLocations())
-        console.log(await state.deleteLocation("Singapore"))
-        console.log(await backend.fetchAllLocations())
-        console.log(await state.getLocationObject("Toa Payoh"))
-        console.log(await state.deleteAllLocations())
-        console.log(await backend.fetchAllLocations())
-    } catch(error){
-        console.error(`Error: ${error.status} ${error.message}`)
-    }
-}
-run()

@@ -44,14 +44,14 @@ const uiHandler=(function(){
         option.textContent="New Location"
         selectBox.appendChild(option)
     }
-    const updateSelectLocationBox=function(locationObjectArray/*Array of location Objects*/){
+    const updateSelectLocationBox=function(locationNameArray/*Array of location Objects*/){
         const select=document.querySelector("select")
         clearSelectBox(select)
         addNewLocationToSelectBox(select)
-        locationObjectArray.forEach((locationObject)=>{
+        locationNameArray.forEach((locationName)=>{
             const option=document.createElement("option")
-            option.value=locationObject["UUID"]
-            option.textContent=locationObject.originalName
+            option.value=locationName
+            option.textContent=locationName
             select.appendChild(option)
         })
     }
@@ -90,15 +90,21 @@ const uiHandler=(function(){
             div.classList.add("locationInformation")
             main.appendChild(div)
         })
-        const button=uiCreation.createDeleteButton()
-        main.appendChild(button)
-        button.textContent="Delete Location"
-        button.addEventListener("click",()=>{
-            eventBus.publish("LOCATION_UI_DELETE_LOCATION", locationObject["UUID"])
+        const deleteButton=uiCreation.createLocationMainButton()
+        main.appendChild(deleteButton)
+        deleteButton.textContent="Delete Location"
+        deleteButton.addEventListener("click",()=>{
+            eventBus.publish("LOCATION_UI_DELETE_LOCATION", locationObject.originalName)
+        })
+        const refreshButton=uiCreation.createLocationMainButton()
+        main.appendChild(refreshButton)
+        refreshButton.textContent="Refresh Location"
+        refreshButton.addEventListener("click",()=>{
+            eventBus.publish("LOCATION_UI_REFRESH_LOCATION", locationObject.originalName)
         })
     }
-    const displayError=function(errorString){
-        alert(errorString)
+    const uiAlert=function(alertString){
+        alert(alertString)
     }
     const spawnResetButton=function(){
         const button=document.createElement("button")
@@ -112,10 +118,13 @@ const uiHandler=(function(){
         select.value=select.firstElementChild.textContent
         eventBus.publish("LOCATION_UI_SELECT_FIRST_OPTION")
     }
-    const selectOption=function(locationObject){
+    const selectOption=function(locationName){
         const select=document.querySelector("select")
-        select.value=locationObject["UUID"]
-        eventBus.publish("LOCATION_UI_SELECT_LOCATION", locationObject)
+        select.value=locationName
+        eventBus.publish("LOCATION_UI_SELECT_LOCATION", locationName)
+    }
+    const demandLocationObject=function(locationName){
+        eventBus.publish("LOCATION_UI_DEMAND_LOCATION_OBJECT")
     }   
     return {
         clearMain,
@@ -124,7 +133,7 @@ const uiHandler=(function(){
         updateSelectLocationBox,
         spawnNLForm,
         spawnLocationInMain,
-        displayError,
+        uiAlert,
         spawnResetButton,
         selectFirstOption,
         selectOption

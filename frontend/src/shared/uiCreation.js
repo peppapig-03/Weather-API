@@ -9,6 +9,11 @@ const uiCreation=(function(){
         button.classList.add("submitButton")
         return button
     }
+    const createFooterButton=function(){
+        const button=document.createElement("button")
+        button.classList.add("footerButton")
+        return button
+    }
     const createFullForm=function(){
         const form=document.createElement("form")
         const inputBox=createInputBox()
@@ -26,14 +31,15 @@ const uiCreation=(function(){
             submitButton
         }
     }
-    const createDeleteButton=function(){
+    const createLocationMainButton=function(){
         const button=document.createElement("button")
-        button.classList.add("delete")
+        button.classList.add("locationMain")
         return button
     }
     return {
         createFullForm,
-        createDeleteButton
+        createLocationMainButton,
+        createFooterButton
     }
 })()
 export default uiCreation
