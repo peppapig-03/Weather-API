@@ -1,16 +1,18 @@
 import eventBus from "../../shared/eventBus.js"
-import backend from "./locationBackend.js"
+import backend from "./emailBackend.js"
 const state=(()=>{
-    let locationCache
+    let emailCache
     const dataInitialisation=async function(){
         try{
-            locationCache=await backend.fetchAllLocations()
+            emailCache=await backend.fetchAllEmails()
         } catch(error){
            locationStateAlert(`Error: ${error.status} ${error.message}`)
         }
     }
     const optionInitialisation=async function(){
+        console.log(locationCache)
         await dataInitialisation()
+        console.log(locationCache)
         locationStateUpdate()
     }  
     const postLocation=async function(inputLocation){

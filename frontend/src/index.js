@@ -1,5 +1,7 @@
 import locationPage from "./pages/location/locationPage.js"
 import uiCreation from "./shared/uiCreation.js"
+import backend from "./pages/email/emailBackend.js"
+import state from "./pages/email/emailState.js"
 const footer=document.querySelector("footer")
 const clearFooter=function(){
     while(footer.firstElementChild){
@@ -37,8 +39,21 @@ const spawnEmailPage=function(){
 const run=function(){
     spawnLocationPage()
 }
-run()
-/*import emailPage from "./pages/email/emailPage.js"*/
+const test=async function(){
+    try{
+        console.log(await backend.fetchAllEmails())
+        console.log(await backend.getEmailSubscriptions("gmail@gmail"))
+        console.log(await backend.deleteSubscriptionFromEmail("haha@gmail", "Shah Alam"))
+        console.log(await backend.fetchAllEmails())
+    } catch(error){
+        console.error(error)
+    }
+} 
+const test2=async function(){
+    console.log(await backend.fetchAllEmails())
+}
+
+
 /*
 const getEmail=async function(emailAddress){
     const data=await fetch(`http://localhost:4000/emails/${emailAddress}`)
@@ -93,59 +108,5 @@ const getAllEmails=async function(){
     } else{
         console.error(synth.error)
     }
-}
-const getLocation=async function(originalName){
-    const data=await fetch(`http://localhost:4000/locations/${originalName}`)
-    const synth=await data.json()
-    if (!synth.error){
-        if (synth.length==0){
-            console.log("Location Not Found")
-        } else{
-            console.log(`Location: ${synth[0].originalname}, ID:${synth[0].id}`)
-        }
-    } else{
-        console.error(synth.error)
-    }
-}
-const postLocation=async function(originalName){
-    const data=await fetch("http://localhost:4000/locations/new", {
-        method:"POST",
-        headers: {
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({originalName:originalName},null,2)
-    })
-    const synth=await data.json()
-    if (!synth.error){
-        console.log(synth.message)
-    } else{
-        console.error(synth.error)
-    }
-}
-const deleteLocation=async function(originalName){
-    const data=await fetch(`http://localhost:4000/locations/delete/${originalName}`,{
-        method:"DELETE"
-    })
-    const synth=await data.json()
-    if (!synth.error){
-        console.log(synth.message)
-    } else{
-        console.error(synth.error)
-    }
-}
-const getAllLocations=async function(){
-    const data=await fetch(`http://localhost:4000/locations/all`)
-    const synth=await data.json()
-    if (!synth.error){
-        if (synth.length==0){
-            console.log("No Locations")
-        } else{
-            synth.forEach((locationRow)=>{
-                console.log(`Location: ${locationRow.originalname}, ID:${locationRow.id}`)
-            })
-        }
-    } else{
-        console.error(synth.error)
-    }
-}
+}}
 */

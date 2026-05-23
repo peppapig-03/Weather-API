@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import pool from "./sql/pool.js"
 import emailRouter from "./routers/emailRouter.js"
 import locationRouter from "./routers/locationRouter.js"
+import subscriptionRouter from "./routers/subscriptionRouter.js"
 dotenv.config()
 
 const app=express()
@@ -13,3 +14,4 @@ app.use(express.json())
 app.listen(process.env.PORT)
 app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
+app.use("/subscriptions/", subscriptionRouter)

@@ -13,7 +13,7 @@ locationRouter.get("/all",
         } catch(error){
             res.status(500).json({
                 status:500,
-                error:"GET_ERROR"
+                error:"GET_ALL_LOCATIONS_ERROR"
             })
         }
     },
@@ -53,12 +53,12 @@ locationRouter.post("/new",
     try{
         await pool.query(`INSERT INTO locations(originalName) VALUES ($1)`, [req.body.originalName])
         res.json({
-            message:"POST_SUCCESS"
+            message:"POST_LOCATION_SUCCESS"
         })
     } catch(error){
         res.status(400).json({
             status:400,
-            error:"POST_ERROR"
+            error:"POST_LOCATION_ERROR"
         })
     }
 })
@@ -66,12 +66,12 @@ locationRouter.delete("/delete/all", async(req,res)=>{
     try{
         await pool.query(`DELETE FROM locations`)
         res.json({
-            message:"DELETE_ALL_SUCCESS"
+            message:"DELETE_ALL_LOCATIONS_SUCCESS"
         })
     } catch(error){
         res.status(500).json({
             status:500,
-            error:"DELETE_ALL_ERROR"
+            error:"DELETE_ALL_LOCATIONS_ERROR"
         })
     }
 })
@@ -81,19 +81,18 @@ locationRouter.delete("/delete/:location", async(req,res)=>{
         await pool.query(`DELETE FROM locations WHERE originalName=$1`, [req.params.location])
         logAllLocations()
         res.json({
-            message:"DELETE_SUCCESS"
+            message:"DELETE_LOCATION_SUCCESS"
         })
     } catch(error){
         res.status(400).json({
             status:400,
-            error:"DELETE_ERROR"
+            error:"DELETE_LOCATION_ERROR"
         })
     }
 })
 locationRouter.get("/:location",
     async (req,res,next)=>{
         try{
-            console.log(req.params.location)
             const data=await pool.query(`SELECT * FROM locations WHERE originalName=$1`,[req.params.location])
             if (data.rowCount==0){
                 res.status(404).json({
@@ -107,7 +106,7 @@ locationRouter.get("/:location",
         } catch(error){
             res.status(500).json({
                 status:500,
-                error:"GET_ERROR"
+                error:"GET_LOCATION_ERROR"
             })
         }
     },
