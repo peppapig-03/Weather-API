@@ -5,6 +5,7 @@ const uiHandler=(function(){
     const header=document.querySelector("header")
     const main=document.querySelector("main")
     let formPresent=false
+    let emailButtonsPresent=false
     const removeForm=function(){
         try{
             const form=document.querySelector("form")
@@ -12,6 +13,15 @@ const uiHandler=(function(){
             formPresent=false
         } catch(error){
             return
+        }
+    }
+    const removeHeaderButtons=function(){
+        if (emailButtonsPresent==true){
+            const buttonList=header.querySelectorAll(".headerButton")
+            buttonList.forEach((button)=>{
+                header.removeChild(button)
+            })
+            emailButtonsPresent=false
         }
     }
     const clearMain=function(){
@@ -23,6 +33,7 @@ const uiHandler=(function(){
         while (header.firstElementChild){
             header.removeChild(header.lastElementChild)
         }
+        formPresent=false
     }
     const spawnSelectBox=function(){
         const select=document.createElement("select")
@@ -54,7 +65,9 @@ const uiHandler=(function(){
         })
     }
     const spawnNEForm=function(){
+        removeHeaderButtons()
         if (formPresent==false){
+            console.log(formPresent)
             clearMain()
             const {form,
                 label,
@@ -65,7 +78,7 @@ const uiHandler=(function(){
             form.id="newEmailForm"
             label.textContent="New Email:"
             label.setAttribute("for","newEmail")
-            input.setAttribute("type","text")
+            input.setAttribute("type","email")
             input.id="newEmail"
             input.placeholder="New Email..."
             input.name="newEmail"
@@ -82,26 +95,36 @@ const uiHandler=(function(){
     const spawnEmailSubscriptionsInMain=function(emailObject){
         clearMain()
         removeForm()
+        console.log(emailObject)
         const emailAddress=emailObject["emailAddress"]
         const subbed=emailObject["subscribedLocations"]
-        const notSubbed=emailObject["notSubscribedLocations"]
         const locationList=emailObject["allLocations"]
+        const form=uiCreation.createMainForm()
+        main.appendChild(form)
         locationList.forEach((locationName)=>{
-            const div=document.createElement("div")
-            div.textContent=`${locationName} : `
-            div.classList.add("locationInformation")
+            const {box, checkBox}=uiCreation.createCheckBox(locationName)
+            form.appendChild(box)
             if (subbed.includes(locationName)){
-                div.textContent+="Subscribed"
+                checkBox.checked=true
             } else{
-                div.textContent+="Not Subscribed"
+                checkBox.checked=false
             }
-            main.appendChild(div)
         })
-        const button=uiCreation.createLocationMainButton()
-        main.appendChild(button)
-        button.textContent="Delete Email"
-        button.addEventListener("click",()=>{
-            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailAddress)
+        const submitButton=uiCreation.createMainSubmitButton()
+        submitButton.textContent="Submit Changes"
+        form.appendChild(submitButton)
+        submitButton.addEventListener("click",(event)=>{
+            event.preventDefault()
+            const rawSubscriptionData=new FormData(form)
+            const subscriptionData={
+                "emailAddress":emailAddress,
+                "oldSubscribedLocations":subbed,
+                "newSubscribedLocations":[]
+            }
+            for (const[location,value] of rawSubscriptionData){
+                subscriptionData["newSubscribedLocations"].push(location)
+            }
+            eventBus.publish("EMAIL_UI_SUBMIT_NEW_SUBSCRIPTIONS", subscriptionData)
         })
     }
     const uiAlert=function(alertString){
@@ -113,6 +136,19 @@ const uiHandler=(function(){
         header.appendChild(button)
         button.textContent="Reset"
         return button
+    }
+    const spawnEmailButtons=function(emailAddress){
+        removeHeaderButtons()
+        const emailButton=uiCreation.createHeaderButton()
+        header.appendChild(emailButton)
+        emailButton.textContent=`Test email`
+        const deleteButton=uiCreation.createHeaderButton()
+        header.appendChild(deleteButton)
+        deleteButton.textContent=`Delete email`
+        deleteButton.addEventListener(("click"),(event)=>{
+            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailAddress)
+        })
+        emailButtonsPresent=true
     }
     const selectFirstOption=function(){
         const select=document.querySelector("select")
@@ -133,6 +169,7 @@ const uiHandler=(function(){
         spawnEmailSubscriptionsInMain,
         selectFirstOption,
         spawnResetButton,
+        spawnEmailButtons,
         clearHeader,
         clearMain
     }

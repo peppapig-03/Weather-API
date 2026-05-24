@@ -24,7 +24,6 @@ const eventBus=(function(){
         }
     }
     const publish=function(eventString, ...data){
-        console.log(eventString)
         if (events[eventString]){
             events[eventString].forEach((callbackFunction)=>{
                 callbackFunction(...data)

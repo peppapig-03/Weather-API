@@ -90,6 +90,7 @@ const state=(()=>{
         eventBus.publish("LOCATION_STATE_ALERT", alertMessage)
     }
     const retrieveState=function(){
+        console.log(locationCache)
         return locationCache.map((locationObject)=>{
                 return locationObject.originalName
             })

@@ -7,6 +7,7 @@ const state=(()=>{
         const response=await backend.fetchAllEmails()
         if (!response.error){
            emailCache=response["data"]
+           console.log(emailCache)
         } else{
             emailStateError(response) 
         }
@@ -39,17 +40,11 @@ const state=(()=>{
         return
     }
     const getEmailSubscriptions=async function(inputEmail){
-        console.log(emailCache)
-        console.log(locationCache)
         const emailSubscriptions=emailCache[inputEmail]
         if (emailSubscriptions!=null){
-            const notSubscribed=locationCache.filter((locationName)=>{
-                return !emailSubscriptions.includes(locationName)
-            })
             const emailObject={
                 emailAddress:inputEmail,
                 subscribedLocations:emailSubscriptions,
-                notSubscribedLocations:notSubscribed,
                 allLocations:locationCache
             }
             eventBus.publish("EMAIL_STATE_GET_EMAIL_SUBSCRIPTIONS", emailObject)
@@ -59,12 +54,43 @@ const state=(()=>{
         }
         return
     }
+    const processEmailSubscriptions=async function(inputEmailObject){
+        const emailAddress=inputEmailObject["emailAddress"]
+        const oldSubbed=inputEmailObject["oldSubscribedLocations"]
+        const newSubbed=inputEmailObject["newSubscribedLocations"]
+        await deleteAllSubscriptionsFromEmail(emailAddress)
+        await postNewSubscriptions(emailAddress, newSubbed)
+        await refreshEmailSubscriptions(emailAddress)
+    }
+    const refreshEmailSubscriptions=async function(inputEmail){
+        if (emailCache[inputEmail]!=null){
+            console.log(emailCache)
+            const response=await backend.getEmailSubscriptions(inputEmail)
+            if (!response.error){
+                emailCache[inputEmail]=response.data[inputEmail]
+                console.log(emailCache)
+            } else{
+                emailStateError(response)
+            }
+        }
+        return
+    }
+    const postNewSubscriptions=async function(inputEmail, locationArray){
+        try{
+            const response=await Promise.all(
+                locationArray.map(async (location)=>{
+                    return await backend.postSubscription(inputEmail, location)
+            }))
+        } catch(error){
+            emailStateAlert("Error: 500 BACKEND_SERVER_ERROR")
+        }
+    }
     const deleteEmail=async function(inputEmail){
         const response=await backend.deleteEmail(inputEmail)
         if (!response.error){
             delete emailCache[inputEmail]
             emailStateUpdate()
-            /*eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION")*/
+            eventBus.publish("EMAIL_STATE_DELETE_EMAIL")
             emailStateAlert(response.message)
         } else{
             emailStateError(response)
@@ -83,12 +109,20 @@ const state=(()=>{
         }
         return
     }
+    const deleteSubscriptionFromEmail=async function(inputEmail,inputLocation){
+        const response=await backend.deleteSubscriptionFromEmail(inputEmail, inputLocation)
+        if (!response.error){
+            emailCache[inputEmail].filter((locations)=>locations!=inputLocation)
+        } else{
+            emailStateError(response)
+        }
+    }
     const deleteAllSubscriptionsFromEmail=async function(inputEmail){
         const response=await backend.deleteAllSubscriptionsFromEmail(inputEmail)
         if (!response.error){
-
+            emailCache[inputEmail]=[]
         } else{
-
+            emailStateError(response)
         }
         return
     }
@@ -122,7 +156,8 @@ const state=(()=>{
         deleteAllEmails,
         retrieveState,
         deleteAllSubscriptionsFromEmail,
-        deleteAllSubscriptions
+        deleteAllSubscriptions,
+        processEmailSubscriptions
         }
 })()
 export default state

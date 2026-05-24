@@ -47,7 +47,7 @@ const backend=(function(){
         return result
     }
     const postSubscription=async function(emailAddress, locationName){
-        const result=await (`http://localhost:4000/subscriptions/new`,{
+        const result=await request(`http://localhost:4000/subscriptions/new`,{
                 method:"POST",
                 headers: {
                         "Content-Type":"application/json"

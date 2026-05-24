@@ -9,6 +9,11 @@ const uiCreation=(function(){
         button.classList.add("submitButton")
         return button
     }
+    const createHeaderButton=function(){
+        const button=document.createElement("button")
+        button.classList.add("headerButton")
+        return button
+    }
     const createFooterButton=function(){
         const button=document.createElement("button")
         button.classList.add("footerButton")
@@ -31,15 +36,48 @@ const uiCreation=(function(){
             submitButton
         }
     }
+    const createMainForm=function(){
+        const form=document.createElement("form")
+        form.classList.add("mainForm")
+        return form
+    }
+    const createCheckBoxFlex=function(){
+        const box=document.createElement("div")
+        box.classList.add("checkBoxFlex")
+        return box
+    }
+    const createCheckBox=function(locationName){
+        const box=createCheckBoxFlex()
+        const label=document.createElement("label")
+        const checkBox=document.createElement("input")
+        checkBox.classList.add("checkBox")
+        checkBox.name=locationName
+        label.setAttribute("for", locationName)
+        label.textContent=locationName
+        checkBox.id=locationName
+        checkBox.setAttribute("type", "checkbox")
+        box.appendChild(checkBox)
+        box.appendChild(label)
+        return {box, checkBox}
+    }
     const createLocationMainButton=function(){
         const button=document.createElement("button")
         button.classList.add("locationMain")
         return button
     }
+    const createMainSubmitButton=function(){
+        const button=document.createElement("button")
+        button.classList.add("mainSubmitButton")
+        return button
+    }
     return {
         createFullForm,
+        createHeaderButton,
         createLocationMainButton,
-        createFooterButton
+        createFooterButton,
+        createMainForm,
+        createCheckBox,
+        createMainSubmitButton
     }
 })()
 export default uiCreation

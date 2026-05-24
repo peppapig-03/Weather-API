@@ -29,12 +29,15 @@ const spawnFooterButton=function(){
 const spawnLocationPage=function(){
     clearFooter()
     locationPage.despawn()
+    emailPage.despawn()
     locationPage.spawn()
     spawnFooterButton()
 }
 const spawnEmailPage=function(){
     clearFooter()
     locationPage.despawn()
+    emailPage.despawn()
+    emailPage.spawn()
     spawnFooterButton()
 }
 const run=function(){
@@ -59,7 +62,7 @@ const test2=async function(){
     console.log(await backend.deleteEmail("11"))
     console.log(await backend.fetchAllEmails())
 }
-emailPage.spawn()
+run()
 
 /*
 const getEmail=async function(emailAddress){
