@@ -7,7 +7,7 @@ const locationRouter=express.Router()
 locationRouter.get("/all", 
     async (req,res,next)=>{
         try{
-            const data=await pool.query(`SELECT * FROM locations`)
+            const data=await pool.query(`SELECT * FROM locations ORDER BY id ASC`)
             req.allData=data.rows.map((locationRow)=>locationRow.originalname)
             next()
         } catch(error){
@@ -19,14 +19,12 @@ locationRouter.get("/all",
     },
     async (req,res)=>{
         try{
-            console.log(req.allData)
             const allWeatherData=await Promise.all(
                 req.allData.map(async (locationName)=>{
                     const weatherData=await API.fetchKeyData(locationName)
                     return weatherData
                 })
             )
-            console.log(allWeatherData)
             res.json(allWeatherData)
         } catch(error) {
             res.status(error.status).json({
@@ -42,7 +40,7 @@ locationRouter.post("/new",
             await API.fetchKeyData(req.body.originalName)
             next()
         } catch(error) {
-            console.log(error.message, error.status)
+
             res.status(error.status).json({
                 status:error.status,
                 error:error.message
@@ -77,9 +75,7 @@ locationRouter.delete("/delete/all", async(req,res)=>{
 })
 locationRouter.delete("/delete/:location", async(req,res)=>{
     try{
-        console.log(req.originalUrl)
         await pool.query(`DELETE FROM locations WHERE originalName=$1`, [req.params.location])
-        logAllLocations()
         res.json({
             message:"DELETE_LOCATION_SUCCESS"
         })
@@ -100,7 +96,6 @@ locationRouter.get("/:location",
                     error:"LOCATION_NOT_FOUND"
                 })
             } else {
-                logAllLocations()
                 next()
             }
         } catch(error){
@@ -124,7 +119,7 @@ locationRouter.get("/:location",
 
 )
 const logAllLocations=async function(){
-    const data=await pool.query("Select * from locations")
+    const data=await pool.query("Select * from locations ORDER BY id ASC")
     console.log(data.rows)
 }
 
