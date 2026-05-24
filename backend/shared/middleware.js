@@ -1,7 +1,7 @@
 import pool from "../sql/pool.js"
 import utils from "./utils.js"
 const middleware=(function(){
-    const emailHandler=async function(req,res,next,emailAddress){
+    const emailValidation=async function(req,res,next,emailAddress){
         try{
             const data=await pool.query("SELECT id from emails where emailaddress=$1", [emailAddress])
             if (data.rowCount==0){
@@ -14,7 +14,7 @@ const middleware=(function(){
             res.status(500).json(utils.errorJSON(500, "GET_EMAIL_ERROR"))
         }
     }
-    const locationHandler=async function(req,res,next,locationName){
+    const locationValidation=async function(req,res,next,locationName){
         try{
             const data=await pool.query("SELECT id from locations where originalname=$1", [locationName])
             if (data.rowCount==0){
@@ -28,8 +28,8 @@ const middleware=(function(){
         }
     }
     return {
-        emailHandler,
-        locationHandler
+        emailValidation,
+        locationValidation
     }
 })()
 export default middleware

@@ -123,9 +123,6 @@ const uiHandler=(function(){
         select.value=locationName
         eventBus.publish("LOCATION_UI_SELECT_LOCATION", locationName)
     }
-    const demandLocationObject=function(locationName){
-        eventBus.publish("LOCATION_UI_DEMAND_LOCATION_OBJECT")
-    }   
     return {
         clearMain,
         clearHeader,

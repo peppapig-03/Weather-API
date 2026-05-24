@@ -2,109 +2,127 @@ import eventBus from "../../shared/eventBus.js"
 import backend from "./emailBackend.js"
 const state=(()=>{
     let emailCache
-    const dataInitialisation=async function(){
-        try{
-            emailCache=await backend.fetchAllEmails()
-        } catch(error){
-           locationStateAlert(`Error: ${error.status} ${error.message}`)
+    let locationCache
+    const emailInitialisation=async function(){
+        const response=await backend.fetchAllEmails()
+        if (!response.error){
+           emailCache=response["data"]
+        } else{
+            emailStateError(response) 
         }
+        return
+    }
+    const locationInitialisation=async function(){
+        const response=await backend.getAllLocations()
+        if (!response.error){
+            locationCache=response["data"]
+        } else{
+            emailStateError(response)
+        }
+        return
     }
     const optionInitialisation=async function(){
-        console.log(locationCache)
-        await dataInitialisation()
-        console.log(locationCache)
-        locationStateUpdate()
+        await emailInitialisation()
+        await locationInitialisation()
+        emailStateUpdate()
+        return
     }  
-    const postLocation=async function(inputLocation){
-        try{
-            const response=await backend.postLocation(inputLocation)
-            locationCache.push(await backend.getLocation(inputLocation))
-            locationStateUpdate()
-            eventBus.publish("LOCATION_STATE_POST_LOCATION",inputLocation)
-            return
-        } catch(error){
-            locationStateAlert(`Error: ${error.status} ${error.message}`)
-            return
-        }
-    }
-    const getLocationObject=async function(inputLocation){
-        const locationObject=locationCache.find((locationObject)=>{
-            return locationObject.originalName==inputLocation
-        })
-        if (locationObject!=undefined){
-            eventBus.publish(`LOCATION_STATE_GET_LOCATION_OBJECT`,locationObject)
-            return
+    const postEmail=async function(inputEmail){
+        const response=await backend.postEmail(inputEmail)
+        if (!response.error){
+            emailCache[inputEmail]=[]
+            emailStateUpdate()
+            eventBus.publish("EMAIL_STATE_POST_EMAIL",inputEmail)
         } else{
-            locationStateAlert(`Error: 404 LOCATION_NOT_FOUND`)
-            return
+            emailStateError(response)
         }
+        return
     }
-    const refreshLocationObject=async function(inputLocation){
-        const originalLocationIndex=locationCache.findIndex((locationObject)=>{
-            return locationObject.originalName==inputLocation
-        })
-        if (originalLocationIndex!=-1){
-            try{
-                const newLocationObject=await backend.getLocation(inputLocation)
-                locationCache[originalLocationIndex]=newLocationObject
-                eventBus.publish("LOCATION_STATE_REFRESH_LOCATION", inputLocation)
-                locationStateAlert("LOCATION_REFRESH_SUCCESS")
-            } catch(error){
-                locationStateAlert(`Error: ${error.status} ${error.message}`)
+    const getEmailSubscriptions=async function(inputEmail){
+        console.log(emailCache)
+        console.log(locationCache)
+        const emailSubscriptions=emailCache[inputEmail]
+        if (emailSubscriptions!=null){
+            const notSubscribed=locationCache.filter((locationName)=>{
+                return !emailSubscriptions.includes(locationName)
+            })
+            const emailObject={
+                emailAddress:inputEmail,
+                subscribedLocations:emailSubscriptions,
+                notSubscribedLocations:notSubscribed,
+                allLocations:locationCache
             }
+            eventBus.publish("EMAIL_STATE_GET_EMAIL_SUBSCRIPTIONS", emailObject)
+            return emailObject
+        } else{
+            emailStateAlert(`Error: 404 EMAIL_NOT_FOUND`)
+        }
+        return
+    }
+    const deleteEmail=async function(inputEmail){
+        const response=await backend.deleteEmail(inputEmail)
+        if (!response.error){
+            delete emailCache[inputEmail]
+            emailStateUpdate()
+            /*eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION")*/
+            emailStateAlert(response.message)
+        } else{
+            emailStateError(response)
+        }
+        return
+    }
+    const deleteAllEmails=async function(){
+        const response=await backend.deleteAllEmails()
+        if (!response.error){
+            emailCache={}
+            emailStateUpdate()
+            /*eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION")
+            */ emailStateAlert(response.message)
+        } else{
+            emailStateError(response)
+        }
+        return
+    }
+    const deleteAllSubscriptionsFromEmail=async function(inputEmail){
+        const response=await backend.deleteAllSubscriptionsFromEmail(inputEmail)
+        if (!response.error){
 
-        }else{
-            locationStateAlert(`Error: 404 LOCATION_NOT_FOUND`)
-            return
+        } else{
+
         }
+        return
     }
-    const deleteLocation=async function(inputLocation){
-        try{
-            const response=await backend.deleteLocation(inputLocation)
-            console.log(inputLocation)
-            locationCache=locationCache.filter((locationObject)=>locationObject.originalName!==inputLocation)
-            locationStateUpdate()
-            eventBus.publish("LOCATION_UI_SELECT_FIRST_OPTION")
-            locationStateAlert(response.message)
-            return
-        } catch(error){
-            locationStateAlert(`Error: ${error.status} ${error.message}`)
-            return
+    const deleteAllSubscriptions=async function(){
+        const response=await backend.deleteAllSubscriptions()
+        if (!response.error){
+
+        } else{
+
         }
+        return
     }
-    const deleteAllLocations=async function(){
-        try{
-            const response=await backend.deleteAllLocations()
-            locationCache=[]
-            locationStateUpdate()
-            eventBus.publish("LOCATION_UI_SELECT_FIRST_OPTION")
-            locationStateAlert(response.message)
-            return
-        } catch(error){
-            locationStateAlert(`Error: ${error.status} ${error.message}`)
-            return
-        }
+    const emailStateUpdate=function(){
+        eventBus.publish("EMAIL_STATE_UPDATE", retrieveState())
     }
-    const locationStateUpdate=function(){
-        eventBus.publish("LOCATION_STATE_UPDATE", retrieveState())
-    }
-    const locationStateAlert=function(alertMessage){
-        eventBus.publish("LOCATION_STATE_ALERT", alertMessage)
+    const emailStateAlert=function(alertMessage){
+        eventBus.publish("EMAIL_STATE_ALERT", alertMessage)
     }
     const retrieveState=function(){
-        return locationCache.map((locationObject)=>{
-                return locationObject.originalName
-            })
+        return Object.keys(emailCache)
+    }
+    const emailStateError=function(response){
+        emailStateAlert(`Error: ${response.status} ${response.error}`)
     }
 
     return{
         optionInitialisation,
-        postLocation,
-        getLocationObject,
-        refreshLocationObject,
-        deleteLocation,
-        deleteAllLocations,
-        retrieveState
+        postEmail,
+        getEmailSubscriptions,
+        deleteEmail,
+        deleteAllEmails,
+        retrieveState,
+        deleteAllSubscriptionsFromEmail,
+        deleteAllSubscriptions
         }
 })()
 export default state

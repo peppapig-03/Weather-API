@@ -13,91 +13,77 @@ const backend=(function(){
         }
     }
     const fetchAllEmails=async function(){
-        const result=await request("http://localhost:4000/emails/all")
+        const result=await request("http://localhost:4000/subscriptions/all")
+        return result
     }
     const postEmail=async function(emailAddress){
-        try{
-            const data=await fetch("http://localhost:4000/emails/new", {
-                    method:"POST",
-                    headers: {
-                        "Content-Type":"application/json"
-                    },
-                    body: JSON.stringify({emailAddress:emailAddress},null,2)
-                })
-            const synth=await data.json()
-            return synthHandler(synth)
-    } catch(error){
-        backendErrorHandler()
-    }
+        const result=await request ("http://localhost:4000/emails/new", {
+            method:"POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({emailAddress:emailAddress}, null, 2)
+        })
+        return result
     }
     const getEmailSubscriptions=async function(emailAddress){
-        try{
-            const data=await fetch(`http://localhost:4000/subscriptions/${emailAddress}`)
-            const synth=await data.json()
-            synthHandler(synth)
-        } catch(error){
-            backendErrorHandler()
-        }
+        const result=await request(`http://localhost:4000/subscriptions/${emailAddress}`)
+        return result
+    }
+    const getAllLocations=async function(){
+        const response=request("http://localhost:4000/subscriptions/allLocations")
+        return response
     }
     const deleteEmail=async function(emailAddress){
-        try{
-            const data=await fetch(`http://localhost:4000/emails/delete/${emailAddress}`,{
+        const result=await request(`http://localhost:4000/emails/delete/${emailAddress}`,{
                 method:"DELETE"
             })
-            const synth=await data.json()
-            return synthHandler(synth)
-        } catch(error){
-        backendErrorHandler()
-        }
+        return result
     }
     const deleteAllEmails=async function(){
-        try{
-            const data=await fetch("http://localhost:4000/emails/delete/all",{
+        const result=await request("http://localhost:4000/emails/delete/all",{
                 method:"DELETE"
             })
-            const synth=await data.json()
-            return synthHandler(synth)
-        } catch(error){
-            backendErrorHandler()
-        }
+        return result
     }
     const postSubscription=async function(emailAddress, locationName){
-        try{
-            const data=await fetch(`http://localhost:4000/subscriptions/new`,{
+        const result=await (`http://localhost:4000/subscriptions/new`,{
                 method:"POST",
                 headers: {
                         "Content-Type":"application/json"
                     },
                 body: JSON.stringify({emailAddress:emailAddress, locationName:locationName},null,2)
             })
-            const synth=await data.json()
-            return synthHandler(synth)
-        } catch(error){
-            backendErrorHandler()
-        }
+        return result
     }
     const deleteSubscriptionFromEmail=async function(emailAddress, locationName){
-        try{
-            const data=await fetch(`http://localhost:4000/subscriptions/delete/${emailAddress}/${locationName}`,{
+        const result=await request(`http://localhost:4000/subscriptions/delete/${emailAddress}/${locationName}`,{
                 method:"DELETE"
             })
-            const synth=await data.json()
-            return synthHandler(synth)
-        }catch(error){
-            backendErrorHandler()
-        }
+        return result
     }
     const deleteAllSubscriptionsFromEmail=async function(emailAddress){
-
+        const result=await request(`http://localhost:4000/subscriptions/delete/${emailAddress}/all`,{
+            method:"DELETE"
+        })
+        return result
+    }
+    const deleteAllSubscriptions=async function(){
+        await request("http://localhost:4000/delete/all",{
+            method:"DELETE"
+        })
     }
     return {
         fetchAllEmails,
         postEmail,
         getEmailSubscriptions,
+        getAllLocations,
         deleteEmail,
         deleteAllEmails,
         postSubscription,
-        deleteSubscriptionFromEmail
+        deleteSubscriptionFromEmail,
+        deleteAllSubscriptionsFromEmail,
+        deleteAllSubscriptions
     }
 })()
 

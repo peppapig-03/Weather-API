@@ -2,6 +2,7 @@ import locationPage from "./pages/location/locationPage.js"
 import uiCreation from "./shared/uiCreation.js"
 import backend from "./pages/email/emailBackend.js"
 import state from "./pages/email/emailState.js"
+import emailPage from "./pages/email/emailPage.js"
 const footer=document.querySelector("footer")
 const clearFooter=function(){
     while(footer.firstElementChild){
@@ -51,8 +52,14 @@ const test=async function(){
 } 
 const test2=async function(){
     console.log(await backend.fetchAllEmails())
+    console.log(await backend.getEmailSubscriptions("HANHAN@gmail"))
+    console.log(await backend.getEmailSubscriptions(11))
+    console.log(await backend.getEmailSubscriptions("gmail@gmai"))
+    console.log(await backend.deleteAllSubscriptionsFromEmail("qiqi@gmail"))
+    console.log(await backend.deleteEmail("11"))
+    console.log(await backend.fetchAllEmails())
 }
-
+emailPage.spawn()
 
 /*
 const getEmail=async function(emailAddress){

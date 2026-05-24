@@ -42,14 +42,14 @@ const uiHandler=(function(){
         option.textContent="New Email"
         selectBox.appendChild(option)
     }
-    const updateSelectEmailBox=function(emailObjectArray/*Array of email Objects*/){
+    const updateSelectEmailBox=function(emailAddressArray){
         const select=document.querySelector("select")
         clearSelectBox(select)
         addNewEmailToSelectBox(select)
-        emailObjectArray.forEach((emailObject)=>{
+        emailAddressArray.forEach((emailAddress)=>{
             const option=document.createElement("option")
-            option.value=emailObject["UUID"]
-            option.textContent=emailObject.address
+            option.value=emailAddress
+            option.textContent=emailAddress
             select.appendChild(option)
         })
     }
@@ -79,30 +79,33 @@ const uiHandler=(function(){
             formPresent=true
         }
     }
-    const spawnEmailLocationsInMain=function(emailObject, locationList){
+    const spawnEmailSubscriptionsInMain=function(emailObject){
         clearMain()
         removeForm()
-        const {address, emailLocationsUUID}=emailObject
-        locationList.forEach((locationObject)=>{
+        const emailAddress=emailObject["emailAddress"]
+        const subbed=emailObject["subscribedLocations"]
+        const notSubbed=emailObject["notSubscribedLocations"]
+        const locationList=emailObject["allLocations"]
+        locationList.forEach((locationName)=>{
             const div=document.createElement("div")
-            div.textContent=`${locationObject.originalName} : `
+            div.textContent=`${locationName} : `
             div.classList.add("locationInformation")
-            main.appendChild(div)
-            if (emailLocationsUUID.includes(locationObject["UUID"])){
-                div.textContent+=`Subscribed by ${address}`
+            if (subbed.includes(locationName)){
+                div.textContent+="Subscribed"
             } else{
-                div.textContent+=`Not Subscribed`
+                div.textContent+="Not Subscribed"
             }
+            main.appendChild(div)
         })
-        const button=uiCreation.createDeleteButton()
+        const button=uiCreation.createLocationMainButton()
         main.appendChild(button)
         button.textContent="Delete Email"
         button.addEventListener("click",()=>{
-            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailObject["UUID"])
+            eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailAddress)
         })
     }
-    const displayError=function(errorString){
-        alert(errorString)
+    const uiAlert=function(alertString){
+        alert(alertString)
     }
     const spawnResetButton=function(){
         const button=document.createElement("button")
@@ -116,18 +119,18 @@ const uiHandler=(function(){
         select.value=select.firstElementChild.textContent
         eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION", select.value)
     }
-    const selectOption=function(emailObject){
+    const selectOption=function(emailAddress){
         const select=document.querySelector("select")
-        select.value=emailObject["UUID"]
-        eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailObject["UUID"])
+        select.value=emailAddress
+        eventBus.publish("EMAIL_UI_SELECT_EMAIL", emailAddress)
     }
     return {
         spawnSelectBox,
         spawnNEForm,
-        displayError,
+        uiAlert,
         selectOption,
         updateSelectEmailBox,
-        spawnEmailLocationsInMain,
+        spawnEmailSubscriptionsInMain,
         selectFirstOption,
         spawnResetButton,
         clearHeader,
