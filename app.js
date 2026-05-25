@@ -15,3 +15,4 @@ app.listen(process.env.PORT)
 app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
 app.use("/subscriptions/", subscriptionRouter)
+
