@@ -140,6 +140,9 @@ const uiHandler=(function(){
         const emailButton=uiCreation.createHeaderButton()
         header.appendChild(emailButton)
         emailButton.textContent=`Test email`
+        emailButton.addEventListener(("click"),(event)=>{
+            eventBus.publish("EMAIL_UI_SENT_EMAIL", emailAddress)
+        })
         const deleteButton=uiCreation.createHeaderButton()
         header.appendChild(deleteButton)
         deleteButton.textContent=`Delete email`

@@ -1,10 +1,10 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-import pool from "./sql/pool.js"
 import emailRouter from "./routers/emailRouter.js"
 import locationRouter from "./routers/locationRouter.js"
 import subscriptionRouter from "./routers/subscriptionRouter.js"
+import sendEmailRouter from "./routers/sendEmailRouter.js"
 dotenv.config()
 
 const app=express()
@@ -16,4 +16,4 @@ app.listen(port)
 app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
 app.use("/subscriptions/", subscriptionRouter)
-
+app.use("/sendemail/", sendEmailRouter)

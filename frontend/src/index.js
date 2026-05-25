@@ -40,7 +40,11 @@ const spawnEmailPage=function(){
 const run=function(){
     spawnLocationPage()
 }
+const test=function(input){
+    if (input%2==0){
+        return input
+    } else{
+        throw Error;
+    }
+}
 run()
-console.log(config.API_URL)
-console.log(window.location.hostname)
-console.log(window.location.hostname)

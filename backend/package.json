@@ -16,5 +16,8 @@
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
     "pg": "^8.21.0"
+  },
+  "dependencies": {
+    "@emailjs/nodejs": "^5.0.2"
   }
 }
