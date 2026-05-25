@@ -16,4 +16,9 @@ app.listen(port)
 app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
 app.use("/subscriptions/", subscriptionRouter)
+app.get("/", (req,res)=>{
+    res.json({
+        hi:"hi"
+    })
+})
 
