@@ -1,4 +1,4 @@
-import utils from "./utils.js"
+import utils from "../shared/utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
         const httpURL=utils.httpRequestMaker(inputLocation)
@@ -6,8 +6,8 @@ const API=(function(){
         try{   
             rawData=await fetch(httpURL)
         } catch(error) {
-            const newError=new Error("API_FETCH_ERROR")
-            newError.status=503
+            const newError=new Error("EXTERNAL_API_GET_ERROR")
+            newError.status=500
             throw newError
         }
         if (!rawData.ok){
@@ -26,9 +26,7 @@ const API=(function(){
             const data=await rawData.json()
             return data
         } catch(error) {
-            const newError=new Error("JSON_PARSE_ERROR")
-            newError.status=502
-            throw newError
+            return utils.errorJSON(502, "JSON_PARSE_ERROR")
         }
     }
     const dataTemp=function(data){
@@ -48,7 +46,6 @@ const API=(function(){
                 "weather":dataWeatherConditions(data),
                 "originalName":inputLocation
         }
-        
     }
     return {fetchKeyData}
 }())
