@@ -24,7 +24,7 @@ const middleware=(function(){
                 next()
             }
         } catch(error){
-            res.status(500).json(utils.errorJSON("GET_LOCATION_ERROR"))
+            res.status(500).json(utils.errorJSON(500, "GET_LOCATION_ERROR"))
         }
     }
     return {
