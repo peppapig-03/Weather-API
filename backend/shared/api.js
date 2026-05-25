@@ -1,4 +1,4 @@
-import utils from "../utils/utils.js"
+import utils from "./utils.js"
 const API=(function(){
     const fetchData=async (inputLocation)=>{
         const httpURL=utils.httpRequestMaker(inputLocation)
@@ -41,16 +41,12 @@ const API=(function(){
         return utils.synthesiseAddress(data.resolvedAddress)
     }
     const fetchKeyData=async (inputLocation)=>{
-        try{
-            const data=await fetchData(inputLocation)
-            return {
+        const data=await fetchData(inputLocation)
+        return {
                 "locationName":dataResolvedLocationName(data),
                 "temperature":dataTemp(data),
                 "weather":dataWeatherConditions(data),
                 "originalName":inputLocation
-            }
-        } catch(error){
-            throw error
         }
         
     }

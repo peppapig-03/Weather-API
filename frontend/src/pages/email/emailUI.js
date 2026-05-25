@@ -67,7 +67,6 @@ const uiHandler=(function(){
     const spawnNEForm=function(){
         removeHeaderButtons()
         if (formPresent==false){
-            console.log(formPresent)
             clearMain()
             const {form,
                 label,
@@ -95,7 +94,6 @@ const uiHandler=(function(){
     const spawnEmailSubscriptionsInMain=function(emailObject){
         clearMain()
         removeForm()
-        console.log(emailObject)
         const emailAddress=emailObject["emailAddress"]
         const subbed=emailObject["subscribedLocations"]
         const locationList=emailObject["allLocations"]

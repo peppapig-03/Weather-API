@@ -1,20 +1,4 @@
 const utils=(function(){
-    function httpRequestMaker(inputPhrase){
-        const httpPhrase=inputPhrase.split(" ").join("%20")
-        return `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${httpPhrase}/?unitGroup=metric&key=DG3J54RLAVLUM2EPNYU2DDP68&contentType=json`
-    }
-    function synthesiseAddress(inputPhrase){
-        if (inputPhrase.toUpperCase()==inputPhrase.toLowerCase()){
-           return inputPhrase
-        } else {
-           const comma=inputPhrase.search(",")
-            if (comma==-1){
-                return inputPhrase
-            } else{
-                return inputPhrase.slice(0,comma)
-            }
-        }    
-    }
     function deKebab(inputWord){
         let capitals=[0]
         for(let index=1;index<inputWord.length;index++){
@@ -39,8 +23,6 @@ const utils=(function(){
         }
     }
     return {
-        httpRequestMaker,
-        synthesiseAddress,
         deKebab
     }
 })()

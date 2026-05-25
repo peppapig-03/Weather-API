@@ -1,5 +1,5 @@
 /*NL=New Location*/
-import utils from "../../utils/utils.js"
+import utils from "../../shared/utils.js"
 import eventBus from "../../shared/eventBus.js"
 import uiCreation from "../../shared/uiCreation.js"
 const uiHandler=(function(){

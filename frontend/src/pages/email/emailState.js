@@ -7,7 +7,6 @@ const state=(()=>{
         const response=await backend.fetchAllEmails()
         if (!response.error){
            emailCache=response["data"]
-           console.log(emailCache)
         } else{
             emailStateError(response) 
         }
@@ -61,14 +60,13 @@ const state=(()=>{
         await deleteAllSubscriptionsFromEmail(emailAddress)
         await postNewSubscriptions(emailAddress, newSubbed)
         await refreshEmailSubscriptions(emailAddress)
+        return
     }
     const refreshEmailSubscriptions=async function(inputEmail){
-        if (emailCache[inputEmail]!=null){
-            console.log(emailCache)
+        if (emailCache[inputEmail]!=undefined){
             const response=await backend.getEmailSubscriptions(inputEmail)
             if (!response.error){
                 emailCache[inputEmail]=response.data[inputEmail]
-                console.log(emailCache)
             } else{
                 emailStateError(response)
             }
@@ -84,6 +82,7 @@ const state=(()=>{
         } catch(error){
             emailStateAlert("Error: 500 BACKEND_SERVER_ERROR")
         }
+        return
     }
     const deleteEmail=async function(inputEmail){
         const response=await backend.deleteEmail(inputEmail)
@@ -102,8 +101,7 @@ const state=(()=>{
         if (!response.error){
             emailCache={}
             emailStateUpdate()
-            /*eventBus.publish("EMAIL_UI_SELECT_FIRST_OPTION")
-            */ emailStateAlert(response.message)
+            emailStateAlert(response.message)
         } else{
             emailStateError(response)
         }
@@ -112,10 +110,11 @@ const state=(()=>{
     const deleteSubscriptionFromEmail=async function(inputEmail,inputLocation){
         const response=await backend.deleteSubscriptionFromEmail(inputEmail, inputLocation)
         if (!response.error){
-            emailCache[inputEmail].filter((locations)=>locations!=inputLocation)
+            emailCahce[inputEmail]=emailCache[inputEmail].filter((locations)=>locations!=inputLocation)
         } else{
             emailStateError(response)
         }
+        return
     }
     const deleteAllSubscriptionsFromEmail=async function(inputEmail){
         const response=await backend.deleteAllSubscriptionsFromEmail(inputEmail)

@@ -1,5 +1,3 @@
-/* each email object is going to be 
-address and subscriptions to which locations */
 import uiHandler from "./emailUI.js"
 import state from "./emailState.js"
 import eventBus from "../../shared/eventBus.js"
