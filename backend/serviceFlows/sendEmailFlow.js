@@ -6,6 +6,6 @@ const sendEmailFlow=async function(inputEmail){
     await subServ.emailValidation(inputEmail) 
     const locationArray=await subServ.getSubscriptions(inputEmail)
     const locationObject=await locServ.getWeatherData(locationArray)
-    APIEmail.sendEmail(inputEmail, locationObject)
+    await APIEmail.sendEmail(inputEmail, locationObject)
 }
 export default sendEmailFlow 
