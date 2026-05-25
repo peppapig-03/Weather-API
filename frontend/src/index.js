@@ -1,6 +1,7 @@
 import locationPage from "./pages/location/locationPage.js"
 import uiCreation from "./shared/uiCreation.js"
 import emailPage from "./pages/email/emailPage.js"
+import config from "./shared/config.js"
 const footer=document.querySelector("footer")
 const clearFooter=function(){
     while(footer.firstElementChild){
@@ -40,3 +41,5 @@ const run=function(){
     spawnLocationPage()
 }
 run()
+console.log(config.API_URL)
+console.log(window.location.hostname)

@@ -1,11 +1,13 @@
 import API from "../../shared/api.js"
+import config from "../../shared/config.js"
 const backend=(function(){
+    const APIURL=config.API_URL
     const fetchAllLocations=async function(){
-        const result=await API.request("http://localhost:4000/locations/all")
+        const result=await API.request(`${APIURL}/locations/all`)
         return result
     }
     const postLocation=async function(locationName){
-        const result=await API.request("http://localhost:4000/locations/new", {
+        const result=await API.request(`${APIURL}/locations/new`, {
                 method:"POST",
                 headers: {
                     "Content-Type":"application/json"
@@ -15,17 +17,17 @@ const backend=(function(){
         return result
     }
     const getLocation=async function(locationName){
-        const result=await API.request(`http://localhost:4000/locations/${locationName}`)
+        const result=await API.request(`${APIURL}/locations/${locationName}`)
         return result
     }
     const deleteLocation=async function(locationName){
-        const result=await API.request(`http://localhost:4000/locations/delete/${locationName}`,{
+        const result=await API.request(`${APIURL}/locations/delete/${locationName}`,{
             method:"DELETE"
         })
         return result
     }
     const deleteAllLocations=async function(){
-        const result=await API.request("http://localhost:4000/locations/delete/all",{
+        const result=await API.request(`${APIURL}/locations/delete/all`,{
             method:"DELETE"
         })
         return result
