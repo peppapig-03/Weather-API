@@ -1,7 +1,7 @@
 body {
     background-color: orange;
     display: grid;
-    grid-template-rows: 2fr 10fr 1fr;
+    grid-template-rows: 2fr 10fr 2fr;
     height: 100dvh;
     padding: 0px;
     margin: 0px;
@@ -36,11 +36,17 @@ form{
 }
 .inputBox > label{
     height:50%;
-    font-size:18px
+    font-size:18px;
+    color:#0D3B66;
+    font-weight:bold
 }
 .inputBox > input{
     background-color:#0D3B66;
     color:white;
+}
+::placeholder{
+    color:white;
+    opacity:0.7;
 }
 .submitButton{
     aspect-ratio:2;
@@ -67,14 +73,15 @@ main{
 }
 .locationMain{
     background-color:#0D3B66;
-    height:80px;
+    height:60px;
     aspect-ratio:5;
     border-radius:20px;
     font-size:30px;
     color:white;
+    margin-top:20px;
 }
 .locationInformation{
-    font-size:25px;
+    font-size:50px;
 }
 footer{
     background-color: #B4D6E3;
@@ -85,7 +92,7 @@ footer{
     gap: 30px
 }
 .footerButton{
-    height:80%;
+    height:50%;
     aspect-ratio:3;
     background-color:#0D3B66;
     color:white;
@@ -97,14 +104,15 @@ footer{
     background-color:#0D3B66;
     color:white;
     border-radius:10px;
-    font-size:20px;
+    font-size:25px;
     padding:0px 20px;
 }
 .mainForm{
     display:flex;
     flex-direction: column;
-    padding:20px 50px 0px 0px;
-    height:80%
+    padding:20px 0px 50px 20px;
+    height:100%;
+    justify-content:space-around
 }
 .checkBoxFlex{
     display:flex;
@@ -118,10 +126,11 @@ footer{
     aspect-ratio:1;
 }
 .mainSubmitButton{
-    height:20%;
-    aspect-ratio: 3;
+    height:60px;
+    width:300px;
     background-color:#0D3B66;
     color:white;
     border-radius:10px;
     font-size:30px;
+    align-self:center;
 }
