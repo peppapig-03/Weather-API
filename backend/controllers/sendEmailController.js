@@ -26,9 +26,13 @@ const sendEmailController=(function(){
             if (keyServ.validateTime()){
                 keyServ.validateKey(req.query.key)
                 await allEmailFlow()
-                res.json(utils.successfulJSON("SEND_ALL_EMAILS_SUCCESS"))
+                res.json({
+                    results:"SEND_EMAILS_SUCCESS"
+                })
             } else{
-                res.json(utils.successfulJSON(("SEND_EMAILS_TIME_ERROR")))
+                res.json({
+                    results:"TIME_ERROR"
+                })
             } 
         } catch(error){
             res.status(error.status||500).json(utils.errorJSON(error.status||500, error.message))
