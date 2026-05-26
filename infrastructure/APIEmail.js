@@ -41,8 +41,11 @@ const APIEmail=(function(){
         const synthTimeString=generateActualTimeString(timeString)
         const dateString=now.toLocaleDateString('en-GB')
         return `<div style="margin-bottom:20px">
-                <h2>Date: ${dateString}</h2>
-                <h2>Time: ${synthTimeString} degrees Celsius</h2>
+                <h1>LIVE WEATHER UPDATE</h1>
+                </div>
+                <div style="margin-bottom:20px">
+                <h3>Date: ${dateString}</h3>
+                <h3>Time: ${synthTimeString}</h3>
                 </div><div style="margin-bottom:20px">
                 <h1>Interested Locations:</h1>
                 <h2></h2>
