@@ -7,7 +7,6 @@ body {
     padding: 0;
     margin: 0;
 }
-
 header {
     background-color: #B4D6E3;
     font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -15,7 +14,7 @@ header {
     align-items: center;
     justify-content: center;
     gap: 3rem;
-    padding: 0px 2rem
+    padding: 1rem 2rem
 }
 header >select{
     height:3rem;
@@ -29,7 +28,7 @@ header >select{
 form{
     display:flex;
     gap:2rem;
-    height:40%
+    height:3rem
 }
 .inputBox {
     display: grid;
@@ -71,21 +70,22 @@ main{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:1.3rem;
+    gap:0.8rem;
     background-color: #7F9DB1;
-    padding-top:1.5rem;
+    padding-top:1rem;
+    padding-bottom:1.3rem
 }
 .locationMain{
     background-color:#0D3B66;
-    height:4rem;
+    height:3.2rem;
     aspect-ratio:5;
     border-radius:20px;
-    font-size:2rem;
+    font-size:1.5rem;
     color:white;
     margin-top:1rem;
 }
 .locationInformation{
-    font-size:3rem;
+    font-size:2.2rem;
 }
 footer{
     background-color: #B4D6E3;
@@ -93,6 +93,7 @@ footer{
     display: flex;
     align-items: center;
     justify-content: center;
+    padding:1rem 0;
 }
 .footerButton{
     height:4rem;
@@ -117,24 +118,23 @@ footer{
 .mainForm{
     display:flex;
     flex-direction: column;
-    padding:0 0 1.6rem 2rem;
     height:100%;
     justify-content:space-around
 }
 .checkBoxFlex{
     display:flex;
-    height:4.5rem;
-    font-size:2.5rem;
-    gap:2rem;
+    height:2.7rem;
+    font-size:2.3rem;
+    gap:1rem;
     font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     align-items:center
 }
 .checkBox{
-    height:60%;
+    height:80%;
     aspect-ratio:1;
 }
 .mainSubmitButton{
-    height:5rem;
+    height:4rem;
     width:20rem;
     background-color:#0D3B66;
     color:white;
