@@ -23,7 +23,7 @@ const sendEmailController=(function(){
     }
     const sendAllEmails=async function(req,res){
         try{
-            if (keyServ.validateTime){
+            if (keyServ.validateTime()){
                 keyServ.validateKey(req.query.key)
                 await allEmailFlow()
                 res.json(utils.successfulJSON("SEND_ALL_EMAILS_SUCCESS"))
