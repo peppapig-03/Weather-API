@@ -13,17 +13,53 @@ const APIEmail=(function(){
         }).join("")
         return entriesHTML
     }
+    const generateActualTimeString=function(timeString){
+        let ampm
+        let hour=timeString.slice(0,2)
+        let minute=timeString.slice(3,5)
+        let hourint=parseInt(hour)
+        if (hourint==0){
+            hour="12"
+            ampm='am'
+        } else if(hourint<=11){
+            ampm='am'
+        } else if(hourint==12){
+            ampm='pm'
+        } else if (hourint<=21){
+            ampm='pm'
+            hour="0"+(hourint-12).toString()
+        } else{
+            ampm='pm'
+            hour=(hourint-12).toString()
+        }
+        const finalString=`${hour}.${minute} ${ampm}`
+        return finalString
+    }
+    const generateTimeHTML=function(){
+        const now=new Date()
+        const timeString=now.toLocaleTimeString('en-GB')
+        const synthTimeString=generateActualTimeString(timeString)
+        const dateString=now.toLocaleDateString('en-GB')
+        return `<div style="margin-bottom:20px">
+                <h1>Date: ${dateString}</h1>
+                <h1>Time: ${synthTimeString} degrees Celsius</h1>
+                <h1>Interested Locations:</h1>
+                <h1></h1>
+            </div>`
+    }
     const sendEmail=async function(emailAddress, locationObject){
         try{
         emailjs.init({
             privateKey:process.env.EMAIL_PRIVATE_KEY,
             publicKey:process.env.EMAIL_PUBLIC_KEY
         })
+        const timeHTML=generateTimeHTML()
         const entriesHTML=generateHTML(locationObject)
+        const actualHTML=`${timeHTML}${entriesHTML}`
         await emailjs.send(process.env.EMAIL_SERVICE_ID, 
             process.env.EMAIL_TEMPLATE_ID,
             {
-                locations:entriesHTML,
+                locations:actualHTML,
                 email:emailAddress
             }
         )
