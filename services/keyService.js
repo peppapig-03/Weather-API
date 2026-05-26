@@ -11,10 +11,10 @@ const keyService=(function(){
     const validateTime=function(){
         const now=new Date()
         const timeString=now.toLocaleTimeString('en-GB')
-        if (["07","08","11","12","15","16","20","21"].includes(timeString.slice(0,2))){
-            return true
-        } else{
+        if (["00","23","19","20","03","04"].includes(timeString.slice(0,2))){
             return false
+        } else{
+            return true
         }
     }
     return {
