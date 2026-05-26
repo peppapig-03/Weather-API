@@ -69,7 +69,7 @@ const backend=(function(){
         return result
     }
     const sendAllEmails=async function(emailAddress){
-        const result=await API.request(`${APIURL}/sendemail/automate`)
+        const result=await API.request(`${APIURL}/sendemail/test?key=BZER*@2kUv.VVk`)
         return result
     }
     return {
