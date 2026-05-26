@@ -3,6 +3,7 @@ name: Run_Email_Sender
 on:
   schedule:
     - cron: '0 */4 * * *'
+  workflow_dispatch:
 
 jobs:
   autoEmail:

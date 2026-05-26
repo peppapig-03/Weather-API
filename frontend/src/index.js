@@ -40,11 +40,4 @@ const spawnEmailPage=function(){
 const run=function(){
     spawnLocationPage()
 }
-const test=function(input){
-    if (input%2==0){
-        return input
-    } else{
-        throw Error;
-    }
-}
 run()
