@@ -2,12 +2,10 @@ import APIEmail from "../infrastructure/APIEmail.js"
 import subServ from "../services/subscriptionServices.js"
 import locServ from "../services/locationServices.js"
 const sendAllEmails=async function(){
-    console.log(11)
     const completeSubscriptionList=await subServ.getAllSubscriptions()
     const sendEmailsList=Object.keys(completeSubscriptionList).filter((email)=>{
         return completeSubscriptionList[email].length!=0
     })
-    console.log(sendEmailsList)
     let currentIndex=0
     const maxIndex=sendEmailsList.length
     if (maxIndex==0){
