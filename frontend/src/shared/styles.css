@@ -73,7 +73,8 @@ main{
     gap:0.8rem;
     background-color: #7F9DB1;
     padding-top:1rem;
-    padding-bottom:1.3rem
+    padding-bottom:1.3rem;
+    justify-content: space-around;
 }
 .locationMain{
     background-color:#0D3B66;
