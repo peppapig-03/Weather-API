@@ -72,6 +72,7 @@ const backend=(function(){
         const result=await API.request(`${APIURL}/sendemail/test?key=BZER*@2kUv.VVk`)
         return result
     }
+    
     return {
         fetchAllEmails,
         postEmail,
