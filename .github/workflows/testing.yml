@@ -11,10 +11,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: 
           node-version: 22
-      - run: ls 
-      - run: cd backend
-      - run: pwd
-      - run: ls
-      - run: npm install
-      - run: cd ..
+      - run: ls && pwd
+      - run: cd backend && pwd && ls && npm install
       - run: node automation/auto.js
