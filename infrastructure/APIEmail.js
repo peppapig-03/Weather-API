@@ -37,15 +37,19 @@ const APIEmail=(function(){
     }
     const generateTimeHTML=function(){
         const now=new Date()
-        const timeString=now.toLocaleTimeString('en-GB')
+        const timeString=now.toLocaleTimeString('en-GB',{
+            timeZone: 'Asia/Singapore'
+        })
         const synthTimeString=generateActualTimeString(timeString)
-        const dateString=now.toLocaleDateString('en-GB')
+        const dateString=now.toLocaleDateString('en-GB',{
+            timeZone:'Asia/Singapore'
+        })
         return `<div style="margin-bottom:20px">
                 <h1>LIVE WEATHER UPDATE</h1>
                 </div>
                 <div style="margin-bottom:20px">
                 <h3>Date: ${dateString}</h3>
-                <h3>Time: ${synthTimeString}</h3>
+                <h3>Time: ${synthTimeString} (GMT + 8)</h3>
                 </div><div style="margin-bottom:20px">
                 <h1>Interested Locations:</h1>
                 <h2></h2>
