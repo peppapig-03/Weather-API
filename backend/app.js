@@ -17,3 +17,7 @@ app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
 app.use("/subscriptions/", subscriptionRouter)
 app.use("/sendemail/", sendEmailRouter)
+app.get("/",(req,res)=>{
+    const now=new Date()
+    res.json(now.toLocaleTimeString('en-GB').slice(0,2))
+})

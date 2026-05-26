@@ -1,8 +1,7 @@
-name: Run_Email_Sender
+name: Test_Email_Sender
 
 on:
-  schedule:
-    - cron: '0 */4 * * *'
+  workflow_dispatch:
 
 jobs:
   autoEmail:
@@ -11,8 +10,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: 
-          node-version: 22
+          node-version: 22 
       - run: cd backend
       - run: npm install
-      - run: cd .. 
+      - run: cd ..
       - run: node automation/auto.js
