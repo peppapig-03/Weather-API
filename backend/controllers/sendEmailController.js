@@ -28,7 +28,7 @@ const sendEmailController=(function(){
                 await allEmailFlow()
                 res.json(utils.successfulJSON("SEND_ALL_EMAILS_SUCCESS"))
             } else{
-                res.status(403).json(utils.errorJSON(403, "TIME_SEND_ERROR"))
+                res.json(utils.successfulJSON(("SEND_EMAILS_TIME_ERROR")))
             } 
         } catch(error){
             res.status(error.status||500).json(utils.errorJSON(error.status||500, error.message))
