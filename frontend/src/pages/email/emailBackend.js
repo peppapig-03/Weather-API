@@ -68,6 +68,10 @@ const backend=(function(){
         const result=await API.request(`${APIURL}/sendemail/${emailAddress}`)
         return result
     }
+    const sendAllEmails=async function(emailAddress){
+        const result=await API.request(`${APIURL}/sendemail/automate`)
+        return result
+    }
     return {
         fetchAllEmails,
         postEmail,
@@ -79,7 +83,8 @@ const backend=(function(){
         deleteSubscriptionFromEmail,
         deleteAllSubscriptionsFromEmail,
         deleteAllSubscriptions,
-        sendEmail
+        sendEmail,
+        sendAllEmails
     }
 })()
 

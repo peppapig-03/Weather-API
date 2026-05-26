@@ -44,6 +44,7 @@ const emailPage=(function(){
         subscriptions.push(eventBus.subscribe("EMAIL_UI_SUBMIT_NEW_SUBSCRIPTIONS", state.processEmailSubscriptions))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_SUBMIT_NEW_SUBSCRIPTIONS", uiHandler.selectFirstOption))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_SENT_EMAIL", state.sendEmail))
+        subscriptions.push(eventBus.subscribe("EMAIL_UI_SENT_ALL_EMAILS", state.sendAllEmails))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", state.deleteAllEmails))
         subscriptions.push(eventBus.subscribe("EMAIL_UI_RESET", uiHandler.selectFirstOption))
         subscriptions.push(eventBus.subscribe("EMAIL_PAGE_DESPAWN", uiHandler.clearMain))

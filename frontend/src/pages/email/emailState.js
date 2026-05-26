@@ -142,6 +142,14 @@ const state=(()=>{
             emailStateError(response)
         }
     }
+    const sendAllEmails=async function(){
+        const response=await backend.sendAllEmails()
+        if (!response.error){
+            emailStateAlert("Email Sent!")
+        } else{
+            emailStateError(response)
+        }
+    }
     const emailStateUpdate=function(){
         eventBus.publish("EMAIL_STATE_UPDATE", retrieveState())
     }
@@ -165,6 +173,7 @@ const state=(()=>{
         deleteAllSubscriptionsFromEmail,
         deleteAllSubscriptions,
         sendEmail,
+        sendAllEmails,
         processEmailSubscriptions
         }
 })()

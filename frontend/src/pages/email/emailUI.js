@@ -149,6 +149,19 @@ const uiHandler=(function(){
         deleteButton.addEventListener(("click"),(event)=>{
             eventBus.publish("EMAIL_UI_DELETE_EMAIL", emailAddress)
         })
+        if (header.querySelector("#emailAll")){
+            header.removeChild(header.querySelector("#emailAll"))
+        }
+        if (emailAddress=="khaisiangabc@gmail.com"){
+            const emailAllButton=uiCreation.createHeaderButton()
+            header.appendChild(emailAllButton)
+            emailAllButton.textContent="Send All Emails"
+            emailAllButton.id="emailAll"
+            emailAllButton.addEventListener("click",(event)=>{
+                eventBus.publish("EMAIL_UI_SENT_ALL_EMAILS")
+            })
+        }
+        
         emailButtonsPresent=true
     }
     const selectFirstOption=function(){

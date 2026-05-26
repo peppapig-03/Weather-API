@@ -20,7 +20,6 @@ const APIEmail=(function(){
             publicKey:process.env.EMAIL_PUBLIC_KEY
         })
         const entriesHTML=generateHTML(locationObject)
-        console.log(entriesHTML)
         await emailjs.send(process.env.EMAIL_SERVICE_ID, 
             process.env.EMAIL_TEMPLATE_ID,
             {
