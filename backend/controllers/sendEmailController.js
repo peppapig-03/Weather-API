@@ -28,10 +28,10 @@ const sendEmailController=(function(){
                 await allEmailFlow()
                 res.send("Ok")
             } else{
-                res.send("Time Error")
+                res.send("T.Er")
             } 
         } catch(error){
-            res.status(500).send("Error")
+            res.send("G.Er")
         }
     }
     return {
