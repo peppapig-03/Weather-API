@@ -4,7 +4,6 @@ import locServ from "../services/locationServices.js"
 import keyServ from "../services/keyService.js"
 const sendAllEmails=async function(key){
     await keyServ.validateKey(key)
-    await keyServ.validateTime()
     const completeSubscriptionList=await subServ.getAllSubscriptions()
     const sendEmailsList=Object.keys(completeSubscriptionList).filter((email)=>{
         return completeSubscriptionList[email].length!=0
