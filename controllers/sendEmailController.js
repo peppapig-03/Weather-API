@@ -23,26 +23,18 @@ const sendEmailController=(function(){
         }
     }
     const sendAllEmails=async function(req,res){
+        res.send("started")
         try{
             await allEmailFlow(req.query.key)
-            res.send("Ok") 
+            console.log("Send emails success")
         } catch(error){
-            res.send("Error")
-        }
-    }
-    const triggerEmails=async function(req,res){
-        try{
-            await queueEmailJobs()
-            res.send('emailJobDone')
-        } catch(error){
-            res.send("emailJobFailed")
+            console.error(error)
         }
     }
     return {
         sendOneEmail,
         sendAllEmails,
-        testAllEmails,
-        triggerEmails
+        testAllEmails
     }
 })()
 export default sendEmailController
