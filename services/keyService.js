@@ -14,9 +14,9 @@ const keyService=(function(){
             timeZone:"Asia/Singapore"
         })
         if (["00","23","19","20","03","04"].includes(timeString.slice(0,2))){
-            return false
+            throw new Error
         } else{
-            return true
+            return
         }
     }
     return {
