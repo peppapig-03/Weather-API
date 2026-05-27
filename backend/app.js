@@ -17,3 +17,6 @@ app.use("/emails/", emailRouter)
 app.use("/locations/", locationRouter)
 app.use("/subscriptions/", subscriptionRouter)
 app.use("/sendemail/", sendEmailRouter)
+app.get("/health",(req,res)=>{
+    res.send("Healthy")
+})
