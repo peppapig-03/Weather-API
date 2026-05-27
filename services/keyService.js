@@ -10,7 +10,9 @@ const keyService=(function(){
     }
     const validateTime=function(){
         const now=new Date()
-        const timeString=now.toLocaleTimeString('en-GB')
+        const timeString=now.toLocaleTimeString('en-GB',{
+            timeZone:"Asia/Singapore"
+        })
         if (["00","23","19","20","03","04"].includes(timeString.slice(0,2))){
             return false
         } else{
