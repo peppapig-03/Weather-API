@@ -3,7 +3,6 @@ import utils from "../shared/utils.js"
 import allEmailFlow from "../serviceFlows/allEmailFlow.js"
 import testEmailFlow from "../serviceFlows/testEmailFlow.js"
 import keyServ from "../services/keyService.js"
-import queueEmailJobs from "../jobs/emailJobs.js"
 const sendEmailController=(function(){
     const sendOneEmail=async function(req,res){
         const emailAddress=req.params.email
