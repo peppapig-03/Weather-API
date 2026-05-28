@@ -152,7 +152,7 @@ const uiHandler=(function(){
         if (header.querySelector("#emailAll")){
             header.removeChild(header.querySelector("#emailAll"))
         }
-        if (emailAddress=="khaisiangabc@gmail.com"){
+        if (emailAddress=="ksweatherapi@gmail.com"){
             const emailAllButton=uiCreation.createHeaderButton()
             header.appendChild(emailAllButton)
             emailAllButton.textContent="Send All Emails"
